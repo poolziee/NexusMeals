@@ -10,10 +10,14 @@ export class ApiService {
   constructor(@Inject(ORDERS_SERVICE) private ordersClient: ClientProxy) {}
 
   async getHello() {
-    return this.ordersClient.send('get_hello', {});
+    return await lastValueFrom(this.ordersClient.send('get_hello', {})).catch((err) => {
+      // TODO: Investigate if it can be solved with interceptor to avoid .catch on every .send.
+      throw new Error(err.message);
+    });
   }
 
   async createOrder(request: CreateOrderRequest, authentication: string) {
+    // TODO: Avoid try-catch where possible.
     try {
       const emitResult = await lastValueFrom(
         this.ordersClient.emit('order_created', { request, Authentication: authentication }),
