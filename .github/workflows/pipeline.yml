@@ -1,0 +1,29 @@
+# TODO: Multiple jobs: build, test, release. Release should be possible only in master, and it should provide a button via UI which will run the release job.
+name: PIPELINE
+
+on:
+  push:
+    branches:
+      - '**'
+env:
+  NODE_VERSION: 20.11.1
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Unit testing
+        run: |
+          npm run test
