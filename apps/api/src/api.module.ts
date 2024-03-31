@@ -13,7 +13,7 @@ import { ApiService } from './api.service';
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
-        PORT: Joi.number().required(),
+        API_PORT: Joi.number().required(),
         RABBITMQ_URI: Joi.string().required(),
         RABBITMQ_ORDERS_QUEUE: Joi.string().required(),
       }),
