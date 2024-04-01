@@ -1,16 +1,19 @@
-# TODO: Multiple jobs: build, test, release. Release should be possible only in master, and it should provide a button via UI which will run the release job.
 name: PIPELINE
 
 on:
   push:
     branches:
       - '**'
+    tags:
+      - 'v*.*.*'
+
 env:
   NODE_VERSION: 20.11.1
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/')
 
     steps:
       - name: Checkout repository
@@ -27,3 +30,33 @@ jobs:
       - name: Unit testing
         run: |
           npm run test
+
+      - name: Integration testing
+        run: |
+          echo "TODO: Run integration tests."
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set VERSION variable from tag
+        run: |
+          TAG=${{ github.ref_name }}
+          echo "VERSION=${TAG#v}" >> $GITHUB_ENV
+
+      - name: Login to Docker Hub
+        run: |
+          echo "TODO: Login to Docker Hub."
+
+      - name: Build and push Docker images
+        run: |
+          echo "TODO: Build production images with tag ${VERSION}"
+
+      - name: Deploy to Kubernetes
+        run: |
+          echo "TODO: Deploy to Kubernetes."
