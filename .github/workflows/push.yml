@@ -12,6 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # TODO: Inconvenient to have to specify the Dockerfile for each image. Automate?
         include:
           - dockerfile: ./apps/api/Dockerfile
             image: poolziee/nexusmeals-api
