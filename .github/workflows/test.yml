@@ -1,0 +1,32 @@
+name: test
+
+on:
+  push:
+    branches:
+      - '**'
+
+env:
+  NODE_VERSION: 20.11.1
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Unit testing
+        run: npm run test
+
+      - name: Integration testing
+        run: |
+          echo "TODO: Run integration tests."
