@@ -1,10 +1,7 @@
 version: '3'
 services:
   api:
-    build:
-      context: .
-      dockerfile: ./apps/api/Dockerfile
-      target: production
+    image: poolziee/nexusmeals-api:latest
     depends_on:
       - orders
       - rabbitmq
@@ -14,10 +11,7 @@ services:
       - .env
 
   orders:
-    build:
-      context: .
-      dockerfile: ./apps/orders/Dockerfile
-      target: production
+    image: poolziee/nexusmeals-orders:latest
     depends_on:
       - rabbitmq
     env_file:
