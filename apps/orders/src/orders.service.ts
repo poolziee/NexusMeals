@@ -5,7 +5,7 @@ import { CreateOrderRequest } from '../../../libs/common/src/dto/create-order-re
 @Injectable()
 export class OrdersService {
   getHello(): string {
-    return 'Hello World!!!';
+    return 'Hello World!';
   }
 
   createOrder(orderInfo: CreateOrderRequest) {
