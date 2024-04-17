@@ -27,6 +27,10 @@ export class RmqModule {
               options: {
                 urls: [configService.get<string>('RABBITMQ_URI')],
                 queue: configService.get<string>(`RABBITMQ_${name}_QUEUE`),
+                // Uncomment this section when debugging.
+                // socketOptions: {
+                //   heartbeatIntervalInSeconds: 3600,
+                // },
               },
             }),
             inject: [ConfigService],

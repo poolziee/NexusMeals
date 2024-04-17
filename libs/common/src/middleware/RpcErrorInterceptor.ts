@@ -7,7 +7,7 @@ export class RpcErrorInterceptor implements NestInterceptor<any, any> {
   intercept(context: ExecutionContext, next: CallHandler<any>) {
     return next.handle().pipe(
       catchError((err) => {
-        // TODO: type-check the err.
+        console.log(err);
         throw new RpcException(err.message);
       }),
     );

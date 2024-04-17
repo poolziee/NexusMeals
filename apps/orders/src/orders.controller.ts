@@ -6,6 +6,7 @@ import { RmqService } from '@app/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderRequest } from '../../../libs/common/src/dto/create-order-request';
 import { RpcErrorInterceptor } from '@app/common/middleware/RpcErrorInterceptor';
+import { RmqPayload } from '@app/common/dto/rmq-payload';
 
 @Controller()
 @UseInterceptors(RpcErrorInterceptor)
@@ -17,15 +18,14 @@ export class OrdersController {
 
   @MessagePattern('get_hello')
   getHello(@Ctx() context: RmqContext): string {
-    // TODO: Use noack for messagepatterns.
     this.rmqService.ack(context);
     return this.ordersService.getHello();
   }
 
   // TODO: change to MessagePattern.
   @EventPattern('order_created')
-  async handleOrderCreated(@Payload() data: CreateOrderRequest, @Ctx() context: RmqContext) {
+  async handleOrderCreated(@Payload() pl: RmqPayload<CreateOrderRequest>, @Ctx() context: RmqContext) {
     this.rmqService.ack(context);
-    this.ordersService.createOrder(data);
+    this.ordersService.createOrder(pl.data);
   }
 }

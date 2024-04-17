@@ -15,6 +15,10 @@ export class RmqService {
         queue: this.configService.get<string>(`RABBITMQ_${queue}_QUEUE`),
         noAck,
         persistent: true,
+        // Uncomment this section when debugging.
+        // socketOptions: {
+        //   heartbeatIntervalInSeconds: 3600,
+        // },
       },
     };
   }

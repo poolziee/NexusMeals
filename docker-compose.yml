@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: ./apps/api/Dockerfile
       target: development
-    command: npm run start:dev
+    command: npm run start:debug 0.0.0.0:9229 --watch
     depends_on:
       - orders
       - rabbitmq
@@ -14,6 +14,7 @@ services:
       - /usr/src/app/node_modules
     ports:
       - '3000:3000'
+      - '9229:9229'
     env_file:
       - .env
 
@@ -22,12 +23,14 @@ services:
       context: .
       dockerfile: ./apps/orders/Dockerfile
       target: development
-    command: npm run start:dev orders
+    command: npm run start:debug 0.0.0.0:9230 orders
     depends_on:
       - rabbitmq
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
+    ports:
+      - '9230:9230'
     env_file:
       - .env
 
