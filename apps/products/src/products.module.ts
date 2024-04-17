@@ -6,6 +6,7 @@ import { RmqModule } from '@app/common';
 
 import { ProductsController } from './products.controller';
 import { ProductsService } from './products.service';
+import { ORDERS_SERVICE } from '@app/common/constants';
 
 @Module({
   imports: [
@@ -16,7 +17,10 @@ import { ProductsService } from './products.service';
         RABBITMQ_PRODUCTS_QUEUE: Joi.string().required(),
       }),
     }),
-    RmqModule,
+    RmqModule.register({
+      name: ORDERS_SERVICE,
+      other: 0,
+    }),
   ],
   controllers: [ProductsController],
   providers: [ProductsService],
