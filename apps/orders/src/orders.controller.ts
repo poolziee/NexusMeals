@@ -1,10 +1,8 @@
 import { Controller, UseInterceptors } from '@nestjs/common';
 import { Ctx, EventPattern, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
-
 import { RmqService } from '@app/common';
-
 import { OrdersService } from './orders.service';
-import { CreateOrderRequest } from '../../../libs/common/src/dto/create-order-request';
+import { ExampleRequest } from '@app/common/dto/example-request';
 import { RpcErrorInterceptor } from '@app/common/middleware/RpcErrorInterceptor';
 import { RmqPayload } from '@app/common/dto/rmq-payload';
 
@@ -16,16 +14,15 @@ export class OrdersController {
     private readonly rmqService: RmqService,
   ) {}
 
-  @MessagePattern('get_hello')
-  getHello(@Ctx() context: RmqContext): string {
+  @MessagePattern('rpc_example')
+  handleRpcExample(@Ctx() context: RmqContext): string {
     this.rmqService.ack(context);
-    return this.ordersService.getHello();
+    return this.ordersService.rpcExample();
   }
 
-  // TODO: change to MessagePattern.
-  @EventPattern('order_created')
-  async handleOrderCreated(@Payload() pl: RmqPayload<CreateOrderRequest>, @Ctx() context: RmqContext) {
+  @EventPattern('pub_sub_example')
+  async handlePubSubExample(@Payload() pl: RmqPayload<ExampleRequest>, @Ctx() context: RmqContext) {
     this.rmqService.ack(context);
-    this.ordersService.createOrder(pl.data);
+    this.ordersService.pubSubExample(pl.data);
   }
 }

@@ -1,16 +1,14 @@
 import { Injectable } from '@nestjs/common';
-
-import { CreateOrderRequest } from '../../../libs/common/src/dto/create-order-request';
+import { ExampleRequest } from '@app/common/dto/example-request';
 
 @Injectable()
 export class OrdersService {
-  getHello(): string {
+  rpcExample(): string {
     return 'Hello World!';
   }
 
-  createOrder(orderInfo: CreateOrderRequest) {
-    // TODO: Save to database and emit event to products service.
-    console.log('Order created:', orderInfo);
-    return 'Order created';
+  pubSubExample(exampleInfo: ExampleRequest) {
+    console.log('Received info:', exampleInfo);
+    return 'Info received.';
   }
 }
