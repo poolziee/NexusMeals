@@ -1,4 +1,4 @@
-import { IsString, Matches } from 'class-validator';
+import { IsNotEmpty, IsString, Matches } from 'class-validator';
 
 const passwordRegex: RegExp = /^(?!.*[\s])(?=.*[A-Z])(?=.*[.!@#$*])(?=.*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$/m;
 
@@ -7,10 +7,13 @@ export class RegisterRequest {
   @IsString()
   address: string;
 
+  @IsNotEmpty()
   firstName: string;
 
+  @IsNotEmpty()
   lastName: string;
 
+  @IsNotEmpty()
   email: string;
 
   // TODO: Send clear message what is wrong with the password.

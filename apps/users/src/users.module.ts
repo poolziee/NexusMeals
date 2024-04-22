@@ -17,14 +17,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         RABBITMQ_URI: Joi.string().required(),
         RABBITMQ_USERS_QUEUE: Joi.string().required(),
 
-        POSTGRES_USERS_URI: Joi.string().required(),
+        MYSQL_USERS_URI: Joi.string().required(),
       }),
     }),
     RmqModule,
+    // TODO: specifying entities as argument to DbModule doesn't work. Investigate and solve.
     DbModule({ name: USERS_DB }),
     TypeOrmModule.forFeature([UserEntity]),
   ],
   controllers: [UsersController],
+  // TODO: Interfaces instead of classes for testing purposes. Applies for all services' modules.
   providers: [UsersService, UsersRepository],
 })
 export class UsersModule {}

@@ -17,7 +17,7 @@ export class ApiController {
     return this.apiService.pubSubExample(request, req.cookies?.Authentication);
   }
 
-  @Post()
+  @Post('register')
   async register(@Body() request: RegisterRequest, @Req() req: any) {
     return this.apiService.register(request, req.cookies?.Authentication);
   }

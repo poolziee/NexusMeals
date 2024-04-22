@@ -8,10 +8,11 @@ interface DbModuleOptions {
 export function DbModule({ name }: DbModuleOptions) {
   return TypeOrmModule.forRootAsync({
     useFactory: (configService: ConfigService) => ({
-      type: 'postgres',
-      url: configService.get<string>(`POSTGRES_${name}_URI`),
+      type: 'mysql',
+      url: configService.get<string>(`MYSQL_${name}_URI`),
       synchronize: true, // TODO: Do not use in production. Might cause data loss.
       logging: true,
+      autoLoadEntities: true,
     }),
     inject: [ConfigService],
   });
