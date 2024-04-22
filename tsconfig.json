@@ -19,9 +19,15 @@
     "noFallthroughCasesInSwitch": false,
     "esModuleInterop": true,
     "paths": {
-      "@app/common": ["libs/common/src"],
-      "@app/common/*": ["libs/common/src/*"]
+      "@app/common": [
+        "libs/common/src"
+      ],
+      "@app/common/*": [
+        "libs/common/src/*"
+      ]
     }
   },
-  "watchOptions": { "watchFile": "fixedPollingInterval" }
+  "watchOptions": {
+    "watchFile": "fixedPollingInterval"
+  }
 }

@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
 
 import { RmqModule } from '@app/common';
-import { ORDERS_SERVICE } from '@app/common/constants';
+import { ORDERS_SERVICE, USERS_SERVICE } from '@app/common/constants';
 
 import { ApiController } from './api.controller';
 import { ApiService } from './api.service';
@@ -20,6 +20,10 @@ import { ApiService } from './api.service';
     }),
     RmqModule.register({
       name: ORDERS_SERVICE,
+      other: 0,
+    }),
+    RmqModule.register({
+      name: USERS_SERVICE,
       other: 0,
     }),
   ],

@@ -1,13 +1,15 @@
 version: '3'
 services:
+  # ---------------------------------------------- #
   api:
     build:
       context: .
       dockerfile: ./apps/api/Dockerfile
       target: development
-    command: npm run start:debug 0.0.0.0:9229 --watch
+    command: npm run start:debug 0.0.0.0:9229
     depends_on:
       - orders
+      - users
       - rabbitmq
     volumes:
       - .:/usr/src/app
@@ -17,7 +19,7 @@ services:
       - '9229:9229'
     env_file:
       - .env
-
+  # ---------------------------------------------- #
   orders:
     build:
       context: .
@@ -33,7 +35,42 @@ services:
       - '9230:9230'
     env_file:
       - .env
+  # ---------------------------------------------- #
+  users:
+    build:
+      context: .
+      dockerfile: ./apps/users/Dockerfile
+      target: development
+    command: npm run start:debug 0.0.0.0:9231 users
+    depends_on:
+      - rabbitmq
+      - postgres_users
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '9231:9231'
+    env_file:
+      - .env
 
+  postgres_users:
+    image: postgres
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=users-db
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+  # ---------------------------------------------- #
+  phppgadmin:
+    image: dockage/phppgadmin
+    ports:
+      - '7300:80'
+    volumes:
+      - ./phppgadmin/config.inc.php:/etc/dockage/runtime/configs/phppgadmin/config.inc.php
+  # ---------------------------------------------- #
   rabbitmq:
     image: rabbitmq:3.13-management
     container_name: rabbitmq
