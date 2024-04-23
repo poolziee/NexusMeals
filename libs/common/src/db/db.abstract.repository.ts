@@ -30,7 +30,11 @@ export abstract class AbstractRepository<T extends HasId> {
     return await this.entity.findOneBy(options);
   }
 
-  public async findByCondition(filterCondition: FindOneOptions<T>): Promise<T> {
+  public async findOneBy(options: FindOptionsWhere<T>): Promise<T> {
+    return await this.entity.findOneBy(options);
+  }
+
+  public async findOne(filterCondition: FindOneOptions<T>): Promise<T> {
     return await this.entity.findOne(filterCondition);
   }
 

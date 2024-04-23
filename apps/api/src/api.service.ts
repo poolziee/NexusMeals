@@ -3,8 +3,8 @@ import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { ORDERS_SERVICE, USERS_SERVICE } from '@app/common/constants';
 import { ExampleRequest } from '@app/common/dto/example-request';
-import { RegisterRequest } from '@app/common/dto/register-request';
-import { RegisterResponse } from '@app/common/dto/register-response';
+import { RegisterRequest, RegisterResponse } from '@app/common/dto/register-dto';
+import { LoginRequest } from '@app/common/dto/login-dto';
 
 @Injectable()
 export class ApiService {
@@ -26,5 +26,9 @@ export class ApiService {
 
   async register(request: RegisterRequest, authentication: string): Promise<RegisterResponse> {
     return await lastValueFrom(this.usersClient.send('register', { data: request, Authentication: authentication }));
+  }
+
+  async login(request: LoginRequest, authentication: string): Promise<RegisterResponse> {
+    return await lastValueFrom(this.usersClient.send('login', { data: request, Authentication: authentication }));
   }
 }

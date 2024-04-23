@@ -23,6 +23,16 @@
       "localRoot": "${workspaceFolder}",
       "remoteRoot": "/usr/src/app",
       "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Attach to Users",
+      "type": "node",
+      "request": "attach",
+      "address": "localhost",
+      "port": 9231,
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "/usr/src/app",
+      "skipFiles": ["<node_internals>/**"]
     }
   ]
 }

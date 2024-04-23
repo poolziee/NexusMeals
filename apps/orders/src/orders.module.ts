@@ -6,6 +6,8 @@ import { RmqModule } from '@app/common';
 
 import { OrdersController } from './orders.controller';
 import { OrdersService } from './orders.service';
+import { AutomapperModule } from '@automapper/nestjs';
+import { classes } from '@automapper/classes';
 
 @Module({
   imports: [
@@ -17,6 +19,7 @@ import { OrdersService } from './orders.service';
       }),
     }),
     RmqModule,
+    AutomapperModule.forRoot({ strategyInitializer: classes() }),
   ],
   controllers: [OrdersController],
   providers: [OrdersService],

@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
-
 import { RmqModule } from '@app/common';
 import { ORDERS_SERVICE, USERS_SERVICE } from '@app/common/constants';
-
 import { ApiController } from './api.controller';
 import { ApiService } from './api.service';
+import { AutomapperModule } from '@automapper/nestjs';
+import { classes } from '@automapper/classes';
+import { CustomErrorFilter } from './middleware/CustomErrorInterceptor';
+import { APP_FILTER } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -26,8 +28,9 @@ import { ApiService } from './api.service';
       name: USERS_SERVICE,
       other: 0,
     }),
+    AutomapperModule.forRoot({ strategyInitializer: classes() }),
   ],
   controllers: [ApiController],
-  providers: [ApiService],
+  providers: [ApiService, { provide: APP_FILTER, useClass: CustomErrorFilter }],
 })
 export class ApiModule {}

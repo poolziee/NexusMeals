@@ -1,22 +1,29 @@
+import { AutoMap } from '@automapper/classes';
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
 export class UserEntity {
+  @AutoMap()
   @PrimaryGeneratedColumn('increment')
   id: number;
 
+  @AutoMap()
   @Column()
   firstName: string;
 
+  @AutoMap()
   @Column()
   lastName: string;
 
+  @AutoMap()
   @Column({ unique: true })
   email: string;
 
-  @Column({ select: false })
+  @AutoMap()
+  @Column()
   passwordHash: string;
 
+  @AutoMap()
   @CreateDateColumn({
     type: 'timestamp',
     precision: 0,

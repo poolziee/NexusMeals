@@ -1,28 +1,35 @@
 import { Injectable } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
-import { RegisterRequest } from '@app/common/dto/register-request';
+import { RegisterRequest, RegisterResponse } from '@app/common/dto/register-dto';
 import { UserEntity } from './entities/user.entity';
+import { InjectMapper } from '@automapper/nestjs';
+import { Mapper } from '@automapper/core';
 import bcrypt from 'bcryptjs';
+import { AuthenticationError, ConflictError } from '@app/common/errors';
+import { LoginRequest, LoginResponse } from '@app/common/dto/login-dto';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly userRepo: UsersRepository) {}
-  async register(user: RegisterRequest) {
-    // TODO: 1.validate user does not exist; 2. Implement DTO mapper.
-    const newUser = new UserEntity();
-    newUser.email = user.email;
-    newUser.passwordHash = bcrypt.hashSync(user.password, bcrypt.genSaltSync(12));
-    newUser.firstName = user.firstName;
-    newUser.lastName = user.lastName;
-    const createdUser = await this.userRepo.save(newUser);
-    {
-      // TODO: DTO mapper.
-      return {
-        firstName: createdUser.firstName,
-        lastName: createdUser.lastName,
-        email: createdUser.email,
-        createdAt: createdUser.createdAt,
-      };
+  constructor(
+    private readonly userRepo: UsersRepository,
+    @InjectMapper() private readonly mapper: Mapper,
+  ) {}
+
+  async login(req: LoginRequest): Promise<LoginResponse> {
+    const user = await this.userRepo.findOneBy({ email: req.email });
+    if (!user || !bcrypt.compareSync(req.password, user.passwordHash)) {
+      throw new AuthenticationError('Invalid email or password.');
     }
+    return this.mapper.map(user, UserEntity, LoginResponse);
+  }
+
+  async register(req: RegisterRequest): Promise<RegisterResponse> {
+    const exists = await this.userRepo.findOneBy({ email: req.email });
+    if (exists) {
+      throw new ConflictError(`User with email '${req.email} 'already exists.`);
+    }
+    let newUser = this.mapper.map(req, RegisterRequest, UserEntity);
+    newUser = await this.userRepo.save(newUser);
+    return this.mapper.map(newUser, UserEntity, RegisterResponse);
   }
 }
