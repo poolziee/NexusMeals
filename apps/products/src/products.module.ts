@@ -6,9 +6,10 @@ import { RmqModule } from '@app/common';
 
 import { ProductsController } from './products.controller';
 import { ProductsService } from './products.service';
-import { ORDERS_SERVICE } from '@app/common/constants';
+import { RMQ_ORDERS } from '@app/common/constants';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
+import { TcpModule } from '@app/common/tcp/tcp.module';
 
 @Module({
   imports: [
@@ -16,13 +17,18 @@ import { classes } from '@automapper/classes';
       isGlobal: true,
       validationSchema: Joi.object({
         RABBITMQ_URI: Joi.string().required(),
-        RABBITMQ_PRODUCTS_QUEUE: Joi.string().required(),
+        RMQ_PRODUCTS_QUEUE: Joi.string().required(),
+        RMQ_ORDERS_QUEUE: Joi.string().required(),
+
+        TCP_PRODUCTS_HOST: Joi.string().required(),
+        TCP_PRODUCTS_PORT: Joi.string().required(),
       }),
     }),
     RmqModule.register({
-      name: ORDERS_SERVICE,
+      name: RMQ_ORDERS,
       other: 0,
     }),
+    TcpModule,
     AutomapperModule.forRoot({ strategyInitializer: classes() }),
   ],
   controllers: [ProductsController],

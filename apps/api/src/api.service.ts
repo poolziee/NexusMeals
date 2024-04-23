@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
-import { ORDERS_SERVICE, USERS_SERVICE } from '@app/common/constants';
+import { RMQ_ORDERS, TCP_ORDERS, TCP_USERS } from '@app/common/constants';
 import { ExampleRequest } from '@app/common/dto/example-request';
 import { RegisterRequest, RegisterResponse } from '@app/common/dto/register-dto';
 import { LoginRequest } from '@app/common/dto/login-dto';
@@ -9,26 +9,27 @@ import { LoginRequest } from '@app/common/dto/login-dto';
 @Injectable()
 export class ApiService {
   constructor(
-    @Inject(ORDERS_SERVICE) private ordersClient: ClientProxy,
-    @Inject(USERS_SERVICE) private usersClient: ClientProxy,
+    @Inject(TCP_ORDERS) private tcpOrders: ClientProxy,
+    @Inject(TCP_USERS) private tcpUsers: ClientProxy,
+    @Inject(RMQ_ORDERS) private rmqOrders: ClientProxy,
   ) {}
 
   async rpcExample() {
-    return await lastValueFrom(this.ordersClient.send('rpc_example', {}));
+    return await lastValueFrom(this.tcpOrders.send('rpc_example', {}));
   }
 
   async pubSubExample(request: ExampleRequest, authentication: string) {
     const emitResult = await lastValueFrom(
-      this.ordersClient.emit('pub_sub_example', { data: request, Authentication: authentication }),
+      this.rmqOrders.emit('pub_sub_example', { data: request, Authentication: authentication }),
     );
     return `ApiService.pubSubExample Emit result ${emitResult}`;
   }
 
   async register(request: RegisterRequest, authentication: string): Promise<RegisterResponse> {
-    return await lastValueFrom(this.usersClient.send('register', { data: request, Authentication: authentication }));
+    return await lastValueFrom(this.tcpUsers.send('register', { data: request, Authentication: authentication }));
   }
 
   async login(request: LoginRequest, authentication: string): Promise<RegisterResponse> {
-    return await lastValueFrom(this.usersClient.send('login', { data: request, Authentication: authentication }));
+    return await lastValueFrom(this.tcpUsers.send('login', { data: request, Authentication: authentication }));
   }
 }

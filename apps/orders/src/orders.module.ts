@@ -8,6 +8,7 @@ import { OrdersController } from './orders.controller';
 import { OrdersService } from './orders.service';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
+import { TcpModule } from '@app/common/tcp/tcp.module';
 
 @Module({
   imports: [
@@ -15,10 +16,14 @@ import { classes } from '@automapper/classes';
       isGlobal: true,
       validationSchema: Joi.object({
         RABBITMQ_URI: Joi.string().required(),
-        RABBITMQ_ORDERS_QUEUE: Joi.string().required(),
+        RMQ_ORDERS_QUEUE: Joi.string().required(),
+
+        TCP_ORDERS_HOST: Joi.string().required(),
+        TCP_ORDERS_PORT: Joi.string().required(),
       }),
     }),
     RmqModule,
+    TcpModule,
     AutomapperModule.forRoot({ strategyInitializer: classes() }),
   ],
   controllers: [OrdersController],

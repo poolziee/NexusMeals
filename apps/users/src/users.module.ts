@@ -11,6 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { UserEntityProfile } from './entities/user.entity.profile';
+import { TcpModule } from '@app/common/tcp/tcp.module';
 
 @Module({
   imports: [
@@ -18,12 +19,16 @@ import { UserEntityProfile } from './entities/user.entity.profile';
       isGlobal: true,
       validationSchema: Joi.object({
         RABBITMQ_URI: Joi.string().required(),
-        RABBITMQ_USERS_QUEUE: Joi.string().required(),
+        RMQ_USERS_QUEUE: Joi.string().required(),
+
+        TCP_USERS_HOST: Joi.string().required(),
+        TCP_USERS_PORT: Joi.string().required(),
 
         MYSQL_USERS_URI: Joi.string().required(),
       }),
     }),
     RmqModule,
+    TcpModule,
     DbModule({ name: USERS_DB }),
     TypeOrmModule.forFeature([UserEntity]),
     AutomapperModule.forRoot({ strategyInitializer: classes() }),

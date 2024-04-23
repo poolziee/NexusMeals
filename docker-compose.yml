@@ -19,8 +19,12 @@ services:
       - '9229:9229'
     environment:
       - API_PORT=${API_PORT}
+      - TCP_ORDERS_HOST=${TCP_ORDERS_HOST}
+      - TCP_ORDERS_PORT=${TCP_ORDERS_PORT}
+      - TCP_USERS_HOST=${TCP_USERS_HOST}
+      - TCP_USERS_PORT=${TCP_USERS_PORT}
       - RABBITMQ_URI=${RABBITMQ_URI}
-      - RABBITMQ_ORDERS_QUEUE=${RABBITMQ_ORDERS_QUEUE}
+      - RMQ_ORDERS_QUEUE=${RMQ_ORDERS_QUEUE}
   # ---------------------------------------------- #
   orders:
     build:
@@ -37,7 +41,9 @@ services:
       - '9230:9230'
     environment:
       - RABBITMQ_URI=${RABBITMQ_URI}
-      - RABBITMQ_ORDERS_QUEUE=${RABBITMQ_ORDERS_QUEUE}
+      - RMQ_ORDERS_QUEUE=${RMQ_ORDERS_QUEUE
+      - TCP_ORDERS_HOST=${TCP_ORDERS_HOST}
+      - TCP_ORDERS_PORT=${TCP_ORDERS_PORT}
   # ---------------------------------------------- #
   users:
     build:
@@ -52,10 +58,13 @@ services:
       - .:/usr/src/app
       - /usr/src/app/node_modules
     ports:
+      - '${TCP_USERS_PORT}:${TCP_USERS_PORT}'
       - '9231:9231'
     environment:
       - RABBITMQ_URI=${RABBITMQ_URI}
-      - RABBITMQ_USERS_QUEUE=${RABBITMQ_USERS_QUEUE}
+      - RMQ_USERS_QUEUE=${RMQ_USERS_QUEUE}
+      - TCP_USERS_HOST=${TCP_USERS_HOST}
+      - TCP_USERS_PORT=${TCP_USERS_PORT}
       - MYSQL_USERS_URI=${MYSQL_USERS_URI}
 
   users-db:

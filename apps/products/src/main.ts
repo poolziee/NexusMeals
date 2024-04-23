@@ -1,14 +1,17 @@
 import { NestFactory } from '@nestjs/core';
 import { ProductsModule } from './products.module';
 import { RmqService } from '@app/common';
-import { PRODUCTS_SERVICE } from '@app/common/constants';
+import { RMQ_PRODUCTS, TCP_PRODUCTS } from '@app/common/constants';
 import { ValidationPipe } from '@nestjs/common';
+import { TcpService } from '@app/common/tcp/tcp.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(ProductsModule);
   const rmqService = app.get<RmqService>(RmqService);
+  const tcpService = app.get<TcpService>(TcpService);
   app.useGlobalPipes(new ValidationPipe());
-  app.connectMicroservice(rmqService.getOptions(PRODUCTS_SERVICE), { inheritAppConfig: true });
+  app.connectMicroservice(rmqService.getOptions(RMQ_PRODUCTS), { inheritAppConfig: true });
+  app.connectMicroservice(tcpService.getOptions(TCP_PRODUCTS), { inheritAppConfig: true });
   await app.startAllMicroservices();
 }
 bootstrap();
