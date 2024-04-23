@@ -7,7 +7,7 @@ import { ApiController } from './api.controller';
 import { ApiService } from './api.service';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
-import { CustomErrorFilter } from './middleware/CustomErrorInterceptor';
+import { RpcExceptionFilter } from './middleware/CustomErrorInterceptor';
 import { APP_FILTER } from '@nestjs/core';
 
 @Module({
@@ -31,6 +31,6 @@ import { APP_FILTER } from '@nestjs/core';
     AutomapperModule.forRoot({ strategyInitializer: classes() }),
   ],
   controllers: [ApiController],
-  providers: [ApiService, { provide: APP_FILTER, useClass: CustomErrorFilter }],
+  providers: [ApiService, { provide: APP_FILTER, useClass: RpcExceptionFilter }],
 })
 export class ApiModule {}
