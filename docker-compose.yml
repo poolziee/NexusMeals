@@ -41,7 +41,7 @@ services:
       - '9230:9230'
     environment:
       - RABBITMQ_URI=${RABBITMQ_URI}
-      - RMQ_ORDERS_QUEUE=${RMQ_ORDERS_QUEUE
+      - RMQ_ORDERS_QUEUE=${RMQ_ORDERS_QUEUE}
       - TCP_ORDERS_HOST=${TCP_ORDERS_HOST}
       - TCP_ORDERS_PORT=${TCP_ORDERS_PORT}
   # ---------------------------------------------- #
