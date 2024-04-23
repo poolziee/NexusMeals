@@ -8,8 +8,7 @@ import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { RpcExceptionFilter } from './middleware/RpcExceptionFilter';
 import { APP_FILTER } from '@nestjs/core';
-import { TcpModule } from '@app/common/tcp/tcp.module';
-import { RmqModule } from '@app/common';
+import { RmqModule, TcpModule } from '@app/common';
 
 @Module({
   imports: [

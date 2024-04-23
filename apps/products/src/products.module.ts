@@ -2,14 +2,13 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
 
-import { RmqModule } from '@app/common';
+import { RmqModule, TcpModule } from '@app/common';
 
 import { ProductsController } from './products.controller';
 import { ProductsService } from './products.service';
 import { RMQ_ORDERS } from '@app/common/constants';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
-import { TcpModule } from '@app/common/tcp/tcp.module';
 
 @Module({
   imports: [

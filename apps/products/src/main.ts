@@ -1,9 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { ProductsModule } from './products.module';
-import { RmqService } from '@app/common';
+import { RmqService, TcpService } from '@app/common';
 import { RMQ_PRODUCTS, TCP_PRODUCTS } from '@app/common/constants';
 import { ValidationPipe } from '@nestjs/common';
-import { TcpService } from '@app/common/tcp/tcp.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(ProductsModule);

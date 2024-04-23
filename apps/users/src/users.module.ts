@@ -3,7 +3,7 @@ import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
-import { RmqModule, DbModule } from '@app/common';
+import { RmqModule, DbModule, TcpModule } from '@app/common';
 import { USERS_DB } from '@app/common/constants';
 import { UsersRepository } from './users.repository';
 import { UserEntity } from './entities/user.entity';
@@ -11,7 +11,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { UserEntityProfile } from './entities/user.entity.profile';
-import { TcpModule } from '@app/common/tcp/tcp.module';
 
 @Module({
   imports: [
