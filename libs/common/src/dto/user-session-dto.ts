@@ -1,4 +1,5 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsEnum, IsNotEmpty } from 'class-validator';
+import { Role } from '../roles';
 
 export class UserSession {
   @IsNotEmpty()
@@ -9,4 +10,6 @@ export class UserSession {
   lastName: string;
   @IsNotEmpty()
   email: string;
+  @IsEnum(Role)
+  role: Role;
 }

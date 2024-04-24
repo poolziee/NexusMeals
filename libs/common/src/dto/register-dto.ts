@@ -1,5 +1,6 @@
-import { IsNotEmpty, IsString, Matches } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, Matches } from 'class-validator';
 import { AutoMap } from '@automapper/classes';
+import { Role } from '../roles';
 
 const passwordRegex: RegExp = /^(?!.*[\s])(?=.*[A-Z])(?=.*[.!@#$*])(?=.*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$/m;
 
@@ -24,6 +25,10 @@ export class RegisterRequest {
   @Matches(passwordRegex)
   @AutoMap()
   password: string;
+
+  @AutoMap()
+  @IsEnum(Role)
+  role: Role;
 }
 
 export class RegisterResponse {
@@ -38,4 +43,7 @@ export class RegisterResponse {
 
   @AutoMap()
   createdAt: string;
+
+  @AutoMap()
+  role: Role;
 }

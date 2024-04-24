@@ -1,5 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 import { IsNotEmpty } from 'class-validator';
+import { Role } from '../roles';
 
 export class LoginRequest {
   @IsNotEmpty()
@@ -23,4 +24,7 @@ export class LoginResponse {
 
   @AutoMap()
   createdAt: string;
+
+  @AutoMap()
+  role: Role;
 }
