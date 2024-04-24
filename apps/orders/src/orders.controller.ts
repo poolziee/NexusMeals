@@ -19,6 +19,7 @@ export class OrdersController {
 
   @EventPattern('pub_sub_example', Transport.RMQ)
   async handlePubSubExample(@Payload() pl: NexPayload<ExampleRequest>, @Ctx() context: RmqContext) {
+    console.log('Received user:', pl.user);
     this.rmqService.ack(context);
     this.ordersService.pubSubExample(pl.data);
   }

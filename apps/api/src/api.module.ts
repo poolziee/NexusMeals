@@ -6,7 +6,7 @@ import { ApiController } from './api.controller';
 import { ApiService } from './api.service';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
-import { RpcExceptionFilter } from './middleware/RpcExceptionFilter';
+import { RpcExceptionFilter } from './middleware/rpc-exception.filter';
 import { APP_FILTER } from '@nestjs/core';
 import { RmqModule, TcpModule } from '@app/common';
 
