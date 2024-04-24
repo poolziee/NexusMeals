@@ -9,6 +9,9 @@ jobs:
     runs-on: self-hosted
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Deploy images to Kubernetes
         run: |
           echo "TODO: Deploy images with tag '${{ github.event.release.tag_name }}' to Kubernetes."
