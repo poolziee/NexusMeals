@@ -12,12 +12,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # TODO: Inconvenient to have to specify the Dockerfile for each image. Automate?
+        # TODO: Databases, rmq, redis.
         include:
           - dockerfile: ./apps/api/Dockerfile
             image: poolziee/nexusmeals-api
           - dockerfile: ./apps/orders/Dockerfile
             image: poolziee/nexusmeals-orders
+          - dockerfile: ./apps/users/Dockerfile
+            image: poolziee/nexusmeals-users
 
     steps:
       - name: Checkout repository
