@@ -1,9 +1,11 @@
 import { Controller } from '@nestjs/common';
-import { Ctx, EventPattern, MessagePattern, Payload, RmqContext, Transport } from '@nestjs/microservices';
+import { EventPattern, MessagePattern, Payload, Transport } from '@nestjs/microservices';
 import { RmqService } from '@app/common';
 import { OrdersService } from './orders.service';
 import { ExampleRequest } from '@app/common/dto/example-request';
 import { NexPayload } from '@app/common/dto/nex-payload';
+import { CurrentUser } from '@app/common/decorators/current-user.decorator';
+import { UserSession } from '@app/common/dto/user-session-dto';
 
 @Controller()
 export class OrdersController {
@@ -18,9 +20,8 @@ export class OrdersController {
   }
 
   @EventPattern('pub_sub_example', Transport.RMQ)
-  async handlePubSubExample(@Payload() pl: NexPayload<ExampleRequest>, @Ctx() context: RmqContext) {
-    console.log('Received user:', pl.user);
-    this.rmqService.ack(context);
+  async handlePubSubExample(@CurrentUser() user: UserSession, @Payload() pl: NexPayload<ExampleRequest>) {
+    console.log('Received user:', user);
     this.ordersService.pubSubExample(pl.data);
   }
 }

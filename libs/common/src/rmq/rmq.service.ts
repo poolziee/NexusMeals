@@ -7,7 +7,7 @@ import { Transport } from '@nestjs/microservices/enums/transport.enum';
 export class RmqService {
   constructor(private readonly configService: ConfigService) {}
 
-  getOptions(name: string, noAck = false): RmqOptions {
+  getOptions(name: string, noAck = true): RmqOptions {
     return {
       transport: Transport.RMQ,
       options: {

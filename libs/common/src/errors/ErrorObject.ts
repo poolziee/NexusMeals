@@ -1,5 +1,5 @@
 export type ErrorObject = {
-  status: 'RpcException';
+  status: 'CustomRpcException';
   message: string;
   errorCode: number;
   errorType: string;

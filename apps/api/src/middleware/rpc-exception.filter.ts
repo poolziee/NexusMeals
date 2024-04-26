@@ -7,7 +7,7 @@ export class RpcExceptionFilter extends BaseExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
-    if (exception.status === 'RpcException') {
+    if (exception.status === 'CustomRpcException') {
       const err: ErrorObject = exception;
       response.status(err.errorCode).json({
         statusCode: err.errorCode,

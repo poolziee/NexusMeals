@@ -11,5 +11,5 @@ export class NexPayload<T> {
   data: T;
   @IsObject()
   @ValidateIf((object, value) => value !== null)
-  user: UserSession | null;
+  private user: UserSession | null;
 }
