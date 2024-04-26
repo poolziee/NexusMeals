@@ -4,8 +4,6 @@ import Joi from 'joi';
 import { TCP_ORDERS, TCP_USERS, RMQ_ORDERS } from '@app/common/constants';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
-import { RpcExceptionFilter } from './middleware/rpc-exception.filter';
-import { APP_FILTER } from '@nestjs/core';
 import { RmqModule, TcpModule } from '@app/common';
 import { AuthController, OrdersController } from './controllers';
 
@@ -32,6 +30,5 @@ import { AuthController, OrdersController } from './controllers';
     AutomapperModule.forRoot({ strategyInitializer: classes() }),
   ],
   controllers: [AuthController, OrdersController],
-  providers: [{ provide: APP_FILTER, useClass: RpcExceptionFilter }],
 })
 export class ApiModule {}
