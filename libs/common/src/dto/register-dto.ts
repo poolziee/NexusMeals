@@ -4,7 +4,6 @@ import { Role } from '../roles';
 
 const passwordRegex: RegExp = /^(?!.*[\s])(?=.*[A-Z])(?=.*[.!@#$*])(?=.*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$/m;
 
-// TODO: Maybe add to the same file as RegisterResponse?
 export class RegisterRequest {
   @IsString()
   @AutoMap()
