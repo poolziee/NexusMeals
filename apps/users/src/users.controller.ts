@@ -6,6 +6,7 @@ import { RegisterRequest } from '@app/common/dto/register-dto';
 import { NexPayload } from '@app/common/dto/nex-payload';
 import { RegisterResponse } from '@app/common/dto/register-dto';
 import { LoginRequest } from '@app/common/dto/login-dto';
+import { PN } from '@app/common/constants';
 
 @Controller()
 export class UsersController {
@@ -14,12 +15,12 @@ export class UsersController {
     private readonly rmqService: RmqService,
   ) {}
 
-  @MessagePattern('register', Transport.TCP)
+  @MessagePattern(PN.register, Transport.TCP)
   async handleRegister(@Payload() pl: NexPayload<RegisterRequest>): Promise<RegisterResponse> {
     return await this.usersService.register(pl.data);
   }
 
-  @MessagePattern('login', Transport.TCP)
+  @MessagePattern(PN.login, Transport.TCP)
   async handleLogin(@Payload() pl: NexPayload<LoginRequest>): Promise<RegisterResponse> {
     return await this.usersService.login(pl.data);
   }

@@ -1,5 +1,5 @@
 import { Body, Controller, Inject, Post } from '@nestjs/common';
-import { TCP_USERS } from '@app/common/constants';
+import { PN, TCP_USERS } from '@app/common/constants';
 import { TcpClient } from '@app/common';
 import { LoginRequest, RegisterRequest, NexPayload } from '@app/common/dto';
 
@@ -9,11 +9,11 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() pl: RegisterRequest) {
-    return await this.tcpUsers.send('register', new NexPayload(pl));
+    return await this.tcpUsers.send(PN.register, new NexPayload(pl));
   }
 
   @Post('login')
   async login(@Body() pl: LoginRequest) {
-    return await this.tcpUsers.send('login', new NexPayload(pl));
+    return await this.tcpUsers.send(PN.login, new NexPayload(pl));
   }
 }

@@ -6,6 +6,7 @@ import { ExampleRequest } from '@app/common/dto/example-request';
 import { NexPayload } from '@app/common/dto/nex-payload';
 import { CurrentUser } from '@app/common/decorators/current-user.decorator';
 import { UserSession } from '@app/common/dto/user-session-dto';
+import { PN } from '@app/common/constants';
 
 @Controller()
 export class OrdersController {
@@ -14,12 +15,12 @@ export class OrdersController {
     private readonly rmqService: RmqService,
   ) {}
 
-  @MessagePattern('rpc_example', Transport.TCP)
+  @MessagePattern(PN.rpc_example, Transport.TCP)
   handleRpcExample(): string {
     return this.ordersService.rpcExample();
   }
 
-  @EventPattern('pub_sub_example', Transport.RMQ)
+  @EventPattern(PN.pub_sub_example, Transport.RMQ)
   async handlePubSubExample(@CurrentUser() user: UserSession, @Payload() pl: NexPayload<ExampleRequest>) {
     console.log('Received user:', user);
     this.ordersService.pubSubExample(pl.data);

@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Inject, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../middleware/auth.guard';
 import { RmqClient, TcpClient } from '@app/common';
-import { RMQ_ORDERS, TCP_ORDERS } from '@app/common/constants';
+import { PN, RMQ_ORDERS, TCP_ORDERS } from '@app/common/constants';
 import { ExampleRequest, NexPayload, UserSession } from '@app/common/dto';
 import { CurrentUser } from '@app/common/decorators';
 import { Roles } from '../decorators/roles.decorator';
@@ -18,12 +18,12 @@ export class OrdersController {
   @Post()
   @Roles(Role.CUSTOMER)
   async pubSubExample(@CurrentUser() user: UserSession, @Body() pl: ExampleRequest) {
-    await this.rmqOrders.emit('pub_sub_example', new NexPayload(pl, user));
+    await this.rmqOrders.emit(PN.pub_sub_example, new NexPayload(pl, user));
     return `ApiService.pubSubExample emitted.`;
   }
 
   @Get()
   async rpcExample() {
-    return await this.tcpOrders.send('rpc_example', new NexPayload({}));
+    return await this.tcpOrders.send(PN.rpc_example, new NexPayload({}));
   }
 }

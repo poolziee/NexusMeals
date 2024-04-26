@@ -7,3 +7,10 @@ export const TCP_PRODUCTS = 'TCP_PRODUCTS';
 export const TCP_USERS = 'TCP_USERS';
 
 export const USERS_DB = 'USERS';
+
+export enum PN {
+  login = 'login',
+  register = 'register',
+  rpc_example = 'rpc_example',
+  pub_sub_example = 'pub_sub_example',
+}
