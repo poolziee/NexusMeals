@@ -2,13 +2,12 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
 import { TCP_ORDERS, TCP_USERS, RMQ_ORDERS } from '@app/common/constants';
-import { ApiController } from './api.controller';
-import { ApiService } from './api.service';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { RpcExceptionFilter } from './middleware/rpc-exception.filter';
 import { APP_FILTER } from '@nestjs/core';
 import { RmqModule, TcpModule } from '@app/common';
+import { AuthController, OrdersController } from './controllers';
 
 @Module({
   imports: [
@@ -32,7 +31,7 @@ import { RmqModule, TcpModule } from '@app/common';
     RmqModule.register({ name: RMQ_ORDERS, other: 0 }),
     AutomapperModule.forRoot({ strategyInitializer: classes() }),
   ],
-  controllers: [ApiController],
-  providers: [ApiService, { provide: APP_FILTER, useClass: RpcExceptionFilter }],
+  controllers: [AuthController, OrdersController],
+  providers: [{ provide: APP_FILTER, useClass: RpcExceptionFilter }],
 })
 export class ApiModule {}
