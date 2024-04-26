@@ -7,9 +7,9 @@ interface DbModuleOptions {
 
 export function DbModule({ name }: DbModuleOptions) {
   return TypeOrmModule.forRootAsync({
-    useFactory: (configService: ConfigService) => ({
+    useFactory: (env: ConfigService) => ({
       type: 'mysql',
-      url: configService.get<string>(`MYSQL_${name}_URI`),
+      url: env.get<string>(`MYSQL_${name}_URI`),
       synchronize: true, // TODO: Do not use in production. Might cause data loss.
       logging: true,
       autoLoadEntities: true,

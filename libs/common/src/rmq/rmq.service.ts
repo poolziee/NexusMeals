@@ -5,14 +5,14 @@ import { Transport } from '@nestjs/microservices/enums/transport.enum';
 
 @Injectable()
 export class RmqService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly env: ConfigService) {}
 
   getOptions(name: string, noAck = true): RmqOptions {
     return {
       transport: Transport.RMQ,
       options: {
-        urls: [this.configService.get<string>('RABBITMQ_URI')],
-        queue: this.configService.get<string>(`${name}_QUEUE`),
+        urls: [this.env.get<string>('RABBITMQ_URI')],
+        queue: this.env.get<string>(`${name}_QUEUE`),
         noAck,
         persistent: true,
         // Uncomment this section when debugging.

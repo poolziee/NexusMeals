@@ -16,11 +16,11 @@ export class TcpModule {
         ClientsModule.registerAsync([
           {
             name,
-            useFactory: (configService: ConfigService) => ({
+            useFactory: (env: ConfigService) => ({
               transport: Transport.TCP,
               options: {
-                host: configService.get<string>(`${name}_HOST`),
-                port: parseInt(configService.get<string>(`${name}_PORT`)),
+                host: env.get<string>(`${name}_HOST`),
+                port: parseInt(env.get<string>(`${name}_PORT`)),
               },
             }),
             inject: [ConfigService],

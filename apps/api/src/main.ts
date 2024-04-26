@@ -6,9 +6,9 @@ import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(ApiModule);
-  const configService = app.get(ConfigService);
+  const env = app.get(ConfigService);
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
-  await app.listen(configService.get('API_PORT'));
+  await app.listen(env.get('API_PORT'));
 }
 bootstrap();
