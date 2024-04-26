@@ -1,10 +1,11 @@
-import { Module } from '@nestjs/common';
+import { RmqModule, TcpModule } from '@app/common';
+
+import { AutomapperModule } from '@automapper/nestjs';
 import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
-import { RmqModule, TcpModule } from '@app/common';
+import { Module } from '@nestjs/common';
 import { OrdersController } from './orders.controller';
 import { OrdersService } from './orders.service';
-import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 
 @Module({

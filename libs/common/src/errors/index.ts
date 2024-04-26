@@ -1,5 +1,7 @@
-export { AuthenticationError } from './AuthenticationError';
-export { AuthorizationError } from './AuthorizationError';
-export { CustomError } from './CustomError';
-export { ConflictError } from './ConflictError';
-export { ServiceError } from './ServiceError';
+export * from './AuthenticationError';
+export * from './AuthorizationError';
+export * from './ConflictError';
+export * from './CustomError';
+export * from './ErrorObject';
+export * from './ServiceError';
+export * from './UnexpectedError';

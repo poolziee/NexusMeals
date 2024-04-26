@@ -1,9 +1,10 @@
+import { RMQ_USERS, TCP_USERS } from '@app/common/constants';
+import { RmqService, TcpService } from '@app/common';
+
+import { ErrorLoggerInterceptor } from '@app/common/middlewares/error-logger.interceptor';
 import { NestFactory } from '@nestjs/core';
 import { UsersModule } from './users.module';
-import { RmqService, TcpService } from '@app/common';
 import { ValidationPipe } from '@nestjs/common';
-import { TCP_USERS, RMQ_USERS } from '@app/common/constants';
-import { ErrorLoggerInterceptor } from '@app/common/middlewares/error-logger.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(UsersModule);
