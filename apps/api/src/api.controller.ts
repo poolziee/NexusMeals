@@ -3,7 +3,7 @@ import { ExampleRequest } from '@app/common/dto/example-request';
 import { ApiService } from './api.service';
 import { RegisterRequest } from '@app/common/dto/register-dto';
 import { LoginRequest } from '@app/common/dto/login-dto';
-import { CurrentUser } from './current-user.decorator';
+import { CurrentUser } from './decorators/current-user.decorator';
 import { UserSession } from '@app/common/dto/user-session-dto';
 import { AuthGuard } from './middleware/auth.guard';
 
