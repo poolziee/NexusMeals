@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { RedisClient } from '@app/common/redis/redis.module';
 
 @Injectable()
+// TODO: Adjust expiration dates.
 export class SessionService {
   constructor(@Inject(REDIS_SESSIONS) private readonly redisSessions: RedisClient) {}
   async getCookieOptions() {
