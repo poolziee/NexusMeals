@@ -1,17 +1,41 @@
-import { UserSession } from '@app/common/dto/user-session-dto';
-import { Role } from '@app/common/roles';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { getAllowedRoles } from '../decorators/roles.decorator';
+import { SessionService } from '../session.service';
+import jwt from '../utils/jwt';
+import { AuthenticationError } from '@app/common/errors';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(
+    private reflector: Reflector,
+    private sessionService: SessionService,
+  ) {}
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
-    // TODO: decrypt jwt and extract session from redis. Throw if no user.
-    const user: UserSession = { id: 1, firstName: 'A', lastName: 'B', email: 'C', role: Role.CUSTOMER };
-    context.switchToHttp().getRequest().user = user;
+    const req = context.switchToHttp().getRequest();
+    // Get the token
+    let access_token;
+    if (req.cookies.access_token) {
+      access_token = req.cookies.access_token;
+    }
+
+    if (!access_token) {
+      throw new AuthenticationError('You are not logged in!');
+    }
+
+    // Validate Access Token
+    const decoded = jwt.verifyToken(access_token);
+
+    if (!decoded) {
+      throw new AuthenticationError(`Invalid token!`);
+    }
+
+    const user = this.sessionService.getUserSession(decoded.sessionId);
+    if (!user) {
+      throw new AuthenticationError(`User session has expired or user no longer exists.`);
+    }
+    req.user = user;
     const allowedRoles = getAllowedRoles(this.reflector, context);
     return !allowedRoles ? true : allowedRoles.some((role) => role === user.role);
   }

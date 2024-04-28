@@ -22,6 +22,7 @@ export class UsersController {
 
   @MessagePattern(PN.login, Transport.TCP)
   async handleLogin(@Payload() pl: NexPayload<LoginRequest>): Promise<RegisterResponse> {
+    console.log('Received login:', pl.data);
     return await this.usersService.login(pl.data);
   }
 }

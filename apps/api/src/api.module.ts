@@ -6,6 +6,7 @@ import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { RmqModule, TcpModule } from '@app/common';
 import { AuthController, OrdersController } from './controllers';
+import { SessionService } from './session.service';
 
 @Module({
   imports: [
@@ -22,6 +23,8 @@ import { AuthController, OrdersController } from './controllers';
 
         RABBITMQ_URI: Joi.string().required(),
         RMQ_ORDERS_QUEUE: Joi.string().required(),
+
+        SECRET_KEY: Joi.string().required(),
       }),
     }),
     TcpModule.register(TCP_ORDERS),
@@ -30,5 +33,6 @@ import { AuthController, OrdersController } from './controllers';
     AutomapperModule.forRoot({ strategyInitializer: classes() }),
   ],
   controllers: [AuthController, OrdersController],
+  providers: [SessionService],
 })
 export class ApiModule {}

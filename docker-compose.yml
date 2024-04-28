@@ -25,6 +25,7 @@ services:
       - TCP_USERS_PORT=${TCP_USERS_PORT}
       - RABBITMQ_URI=${RABBITMQ_URI}
       - RMQ_ORDERS_QUEUE=${RMQ_ORDERS_QUEUE}
+      - SECRET_KEY=${SECRET_KEY}
   # ---------------------------------------------- #
   orders:
     build:
