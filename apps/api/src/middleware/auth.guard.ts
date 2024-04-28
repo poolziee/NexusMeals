@@ -1,6 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Observable } from 'rxjs';
 import { getAllowedRoles } from '../decorators/roles.decorator';
 import { SessionService } from '../session.service';
 import jwt from '../utils/jwt';
@@ -12,7 +11,7 @@ export class AuthGuard implements CanActivate {
     private reflector: Reflector,
     private sessionService: SessionService,
   ) {}
-  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
     // Get the token
     let access_token;
@@ -31,7 +30,7 @@ export class AuthGuard implements CanActivate {
       throw new AuthenticationError(`Invalid token!`);
     }
 
-    const user = this.sessionService.getUserSession(decoded.sessionId);
+    const user = await this.sessionService.getUserSession(decoded.sessionId);
     if (!user) {
       throw new AuthenticationError(`User session has expired or user no longer exists.`);
     }

@@ -52,13 +52,12 @@ export class AuthController {
     }
 
     // Check if the user has a valid session.
-    const user = this.sessionService.getUserSession(decoded.sessionId);
+    const user = await this.sessionService.getUserSession(decoded.sessionId);
     if (!user) {
       throw new AuthorizationError(message);
     }
 
     // TODO: Check if the user exists and update user variable.
-
     if (!user) {
       throw new AuthenticationError('User does not exist anymore!');
     }
@@ -92,7 +91,7 @@ export class AuthController {
       throw new AuthenticationError('Token invalid or expired.');
     }
 
-    this.sessionService.deleteUserSession(decoded.sessionId);
+    await this.sessionService.deleteUserSession(decoded.sessionId);
 
     res.cookie('access_token', '', { maxAge: 1 });
     res.cookie('refresh_token', '', { maxAge: 1 });

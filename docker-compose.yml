@@ -26,6 +26,8 @@ services:
       - RABBITMQ_URI=${RABBITMQ_URI}
       - RMQ_ORDERS_QUEUE=${RMQ_ORDERS_QUEUE}
       - SECRET_KEY=${SECRET_KEY}
+      - REDIS_SESSIONS_PORT=${REDIS_SESSIONS_PORT}
+      - REDIS_SESSIONS_HOST=${REDIS_SESSIONS_HOST}
   # ---------------------------------------------- #
   orders:
     build:
@@ -88,10 +90,17 @@ services:
     volumes:
       - ./phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
   # ---------------------------------------------- #
+  redis_sessions:
+    container_name: ${REDIS_SESSIONS_HOST}
+    image: redis:latest
+    ports:
+      - ${REDIS_SESSIONS_PORT}:${REDIS_SESSIONS_PORT}
+
+  # ---------------------------------------------- #
   rabbitmq:
     image: rabbitmq:3.13-management
-    container_name: rabbitmq
-    hostname: rabbitmq
+    container_name: ${RABBITMQ_HOST_NAME}
+    hostname: ${RABBITMQ_HOST_NAME}
     volumes:
       - /var/lib/rabbitmq
     ports:

@@ -20,6 +20,12 @@ export class RpcExceptionFilter implements ExceptionFilter {
       console.log(exception);
       const err: ErrorObject = exception.error;
       this.transform(response, err);
+    } else if ('status' in exception) {
+      console.log(exception);
+      response.status(exception.status).json({
+        statusCode: exception.status,
+        message: exception.message,
+      });
     } else {
       console.log(exception);
       response.status(500).json({

@@ -8,6 +8,8 @@ export const TCP_USERS = 'TCP_USERS';
 
 export const USERS_DB = 'USERS';
 
+export const REDIS_SESSIONS = 'REDIS_SESSIONS';
+
 export enum PN {
   login = 'login',
   register = 'register',

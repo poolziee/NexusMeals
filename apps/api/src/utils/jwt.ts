@@ -3,7 +3,7 @@ import jsonwebtoken, { SignOptions } from 'jsonwebtoken';
 
 module jwt {
   export const signToken = (payload: { sessionId: string }, options: SignOptions = {}) => {
-    return jsonwebtoken.sign(payload, 'TODO: .env', {
+    return jsonwebtoken.sign(payload, process.env.SECRET_KEY, {
       ...options,
       algorithm: 'HS256',
     });
@@ -11,7 +11,7 @@ module jwt {
 
   export const verifyToken = (token: string): { sessionId: string } | null => {
     try {
-      return jsonwebtoken.verify(token, 'TODO: .env') as { sessionId: string };
+      return jsonwebtoken.verify(token, process.env.SECRET_KEY) as { sessionId: string };
     } catch (error) {
       return null;
     }

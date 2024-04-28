@@ -1,11 +1,13 @@
 import { UserSession } from '@app/common/dto';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import jwt from './utils/jwt';
-import { Role } from '@app/common/roles';
+import { REDIS_SESSIONS } from '@app/common/constants';
+import { v4 as uuidv4 } from 'uuid';
+import { RedisClient } from '@app/common/redis/redis.module';
 
 @Injectable()
 export class SessionService {
-  constructor() {}
+  constructor(@Inject(REDIS_SESSIONS) private readonly redisSessions: RedisClient) {}
   async getCookieOptions() {
     // Cookie options.
     const accessTokenCookieOptions = {
@@ -26,23 +28,28 @@ export class SessionService {
     return { accessTokenCookieOptions, refreshTokenCookieOptions };
   }
 
+  private toKey = (sessionId: string) => 'sess:' + sessionId;
+
   private async setUserSession(user: UserSession) {
-    // TODO: set in redis.
-    return 'sessionId';
+    const key = this.toKey(uuidv4());
+    await this.redisSessions.set(key, JSON.stringify(user), 'EX', 60 * 60 * 24 * 7);
+    return key.slice(5);
   }
 
   private async updateUserSession(oldSessionId: string, user: UserSession) {
-    // TODO: update in redis.
-    return 'updatedSessionId';
+    await this.deleteUserSession(oldSessionId);
+    return await this.setUserSession(user);
   }
 
   async deleteUserSession(sessionId: string) {
-    // TODO: delete from redis.
+    return await this.redisSessions.del(this.toKey(sessionId));
   }
 
-  getUserSession(sessionId: string): UserSession {
-    // TODO: get from redis.
-    return { id: 1, firstName: 'A', lastName: 'B', email: 'C', role: Role.CUSTOMER };
+  async getUserSession(sessionId: string): Promise<UserSession | null> {
+    const user = await this.redisSessions.get(this.toKey(sessionId));
+
+    if (user) return JSON.parse(user);
+    else return null;
   }
 
   async signAndSetSession(user: UserSession, oldSessionId?: string) {
