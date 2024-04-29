@@ -25,7 +25,7 @@ export class UserEntity {
   passwordHash: string;
 
   @AutoMap()
-  @Column()
+  @Column({ type: 'enum', enum: Role })
   role: Role;
 
   @AutoMap()
