@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
-import { createMap, forMember, ignore, Mapper } from '@automapper/core';
+import { createMap, forMember, ignore, Mapper, mapWith } from '@automapper/core';
 import { Injectable } from '@nestjs/common';
 import { ProductEntity } from './product.entity';
 import { CategoryEntity } from './category.entity';
@@ -10,8 +10,10 @@ import {
   ReadCategoryDTO,
   ReadCategoryNoProductsDTO,
   ReadProductDTO,
+  ProductNoRelationsDTO,
   UpdateCategoryDTO,
   UpdateProductDTO,
+  CategoryNoRelationsDTO,
 } from '@app/common/dto';
 
 @Injectable()
@@ -22,9 +24,27 @@ export class InventoryProfile extends AutomapperProfile {
 
   override get profile() {
     return (mapper) => {
-      createMap(mapper, ProductEntity, ReadProductDTO);
-      createMap(mapper, CategoryEntity, ReadCategoryDTO);
+      createMap(mapper, ProductEntity, ProductNoRelationsDTO);
+      createMap(mapper, CategoryEntity, CategoryNoRelationsDTO);
+      createMap(
+        mapper,
+        CategoryEntity,
+        ReadCategoryDTO,
+        forMember(
+          (dest) => dest.products,
+          mapWith(ProductNoRelationsDTO, ProductEntity, (src) => src.products),
+        ),
+      );
       createMap(mapper, CategoryEntity, ReadCategoryNoProductsDTO);
+      createMap(
+        mapper,
+        ProductEntity,
+        ReadProductDTO,
+        forMember(
+          (dest) => dest.category,
+          mapWith(CategoryNoRelationsDTO, CategoryEntity, (src) => src.category),
+        ),
+      );
       createMap(
         mapper,
         CreateCategoryDTO,

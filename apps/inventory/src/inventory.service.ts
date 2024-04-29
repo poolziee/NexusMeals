@@ -63,7 +63,7 @@ export class InventoryService {
     return this.mapper.map(category, CategoryEntity, ReadCategoryNoProductsDTO);
   }
 
-  async deleteCategory(req: DeleteCategoryRequest, chef: UserSession): Promise<void> {
+  async deleteCategory(req: DeleteCategoryRequest, chef: UserSession): Promise<string> {
     const category = await this.categoryRepo.findOneById(req.id);
     if (!category) {
       throw new ConflictError(`Trying to delete a category that does not exist.`);
@@ -71,8 +71,9 @@ export class InventoryService {
     if (category.chefId !== chef.id) {
       throw new AuthorizationError('Trying to delete a category that does not belong to you.');
     }
+    await this.productRepo.delete({ category: category });
     await this.categoryRepo.remove(category);
-    // TODO: Delete all products with category.
+    return `Deleted category '${category.name}'.`;
   }
 
   /* ------------------------------------------------------------------------------------------------------------------ */
@@ -118,7 +119,7 @@ export class InventoryService {
     return this.mapper.map(product, ProductEntity, ReadProductDTO);
   }
 
-  async deleteProduct(req: DeleteProductRequest, chef: UserSession): Promise<void> {
+  async deleteProduct(req: DeleteProductRequest, chef: UserSession): Promise<string> {
     const product = await this.productRepo.findOneById(req.id);
     if (!product) {
       throw new ConflictError(`Trying to delete a category that does not exist.`);
@@ -127,5 +128,6 @@ export class InventoryService {
       throw new AuthorizationError('Trying to delete a product that does not belong to you.');
     }
     await this.productRepo.remove(product);
+    return `Deleted product '${product.name}'.`;
   }
 }

@@ -55,7 +55,7 @@ export class InventoryController {
   async handleDeleteCategory(
     @CurrentUser() chef: UserSession,
     @Payload() pl: NexPayload<DeleteCategoryRequest>,
-  ): Promise<void> {
+  ): Promise<string> {
     return await this.inventoryService.deleteCategory(pl.data, chef);
   }
   /* ------------------------------------------------------------------------------------------------------------------ */
@@ -80,7 +80,7 @@ export class InventoryController {
   async handleDeleteProduct(
     @CurrentUser() chef: UserSession,
     @Payload() pl: NexPayload<DeleteProductRequest>,
-  ): Promise<void> {
+  ): Promise<string> {
     return await this.inventoryService.deleteProduct(pl.data, chef);
   }
 }

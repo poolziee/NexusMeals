@@ -54,6 +54,10 @@ export abstract class AbstractRepository<T extends HasId> {
     return await this.entity.remove(data);
   }
 
+  public async delete(options: FindOptionsWhere<T>): Promise<void> {
+    await this.entity.delete(options);
+  }
+
   public async preload(entityLike: DeepPartial<T>): Promise<T> {
     return await this.entity.preload(entityLike);
   }

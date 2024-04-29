@@ -20,7 +20,7 @@ export class CategoryEntity {
   @AutoMap()
   description: string;
 
-  @OneToMany(() => ProductEntity, (product) => product.category)
+  @OneToMany(() => ProductEntity, (product) => product.category, { eager: true })
   @AutoMap()
   products: ProductEntity[];
 }
