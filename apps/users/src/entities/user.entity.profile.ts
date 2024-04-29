@@ -26,6 +26,10 @@ export class UserEntityProfile extends AutomapperProfile {
           (dest) => dest.passwordHash,
           mapFrom((src) => bcrypt.hashSync(src.password, bcrypt.genSaltSync(12))),
         ),
+        forMember(
+          (dest) => dest.role,
+          mapFrom((src) => src.role.toString()),
+        ),
       );
       createMap(
         mapper,

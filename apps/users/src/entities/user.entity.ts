@@ -1,4 +1,3 @@
-import { Role } from '@app/common/roles';
 import { AutoMap } from '@automapper/classes';
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -25,8 +24,8 @@ export class UserEntity {
   passwordHash: string;
 
   @AutoMap()
-  @Column({ type: 'enum', enum: Role })
-  role: Role;
+  @Column()
+  role: string;
 
   @AutoMap()
   @CreateDateColumn({
