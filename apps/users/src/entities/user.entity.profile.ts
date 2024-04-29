@@ -6,6 +6,7 @@ import { UserEntity } from './user.entity';
 import { RegisterRequest, RegisterResponse } from '@app/common/dto/register-dto';
 import bcrypt from 'bcryptjs';
 import { LoginResponse } from '@app/common/dto/login-dto';
+import { Role } from '@app/common/roles';
 
 @Injectable()
 export class UserEntityProfile extends AutomapperProfile {
@@ -32,7 +33,7 @@ export class UserEntityProfile extends AutomapperProfile {
         RegisterResponse,
         forMember(
           (dest) => dest.role,
-          mapFrom((src) => src.role),
+          mapFrom((src) => Role[src.role as keyof typeof Role]),
         ),
       );
       createMap(
@@ -41,7 +42,7 @@ export class UserEntityProfile extends AutomapperProfile {
         LoginResponse,
         forMember(
           (dest) => dest.role,
-          mapFrom((src) => src.role),
+          mapFrom((src) => Role[src.role as keyof typeof Role]),
         ),
       );
     };
