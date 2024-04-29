@@ -46,10 +46,19 @@ export abstract class AbstractRepository<T extends HasId> {
     return await this.entity.find(options);
   }
 
+  public async findAllBy(options: FindOptionsWhere<T>): Promise<T[]> {
+    return await this.entity.find({ where: options });
+  }
+
   public async remove(data: T): Promise<T> {
     return await this.entity.remove(data);
   }
+
   public async preload(entityLike: DeepPartial<T>): Promise<T> {
     return await this.entity.preload(entityLike);
+  }
+
+  public async exists(options: FindOptionsWhere<T>): Promise<boolean> {
+    return await this.entity.exists({ where: options });
   }
 }

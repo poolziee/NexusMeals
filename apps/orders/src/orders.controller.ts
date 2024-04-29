@@ -2,11 +2,9 @@ import { Controller } from '@nestjs/common';
 import { EventPattern, MessagePattern, Payload, Transport } from '@nestjs/microservices';
 import { RmqService } from '@app/common';
 import { OrdersService } from './orders.service';
-import { ExampleRequest } from '@app/common/dto/example-request';
-import { NexPayload } from '@app/common/dto/nex-payload';
-import { CurrentUser } from '@app/common/decorators/current-user.decorator';
-import { UserSession } from '@app/common/dto/user-session-dto';
 import { PN } from '@app/common/constants';
+import { CurrentUser } from '@app/common/decorators';
+import { ExampleRequest, NexPayload, UserSession } from '@app/common/dto';
 
 @Controller()
 export class OrdersController {

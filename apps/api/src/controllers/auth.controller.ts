@@ -15,12 +15,12 @@ export class AuthController {
   ) {}
 
   @Post('register')
-  async register(@Body() pl: RegisterRequest) {
-    return await firstValueFrom(this.tcpUsers.send(PN.register, new NexPayload(pl)));
+  async register(@Body() data: RegisterRequest) {
+    return await firstValueFrom(this.tcpUsers.send(PN.register, new NexPayload(data)));
   }
 
   @Post('login')
-  async login(@Req() req, @Body() pl: LoginRequest, @Res() res) {
+  async login(@Req() req, @Body() data: LoginRequest, @Res() res) {
     let oldSessionId: string | undefined;
     if (req.cookies.refresh_token) {
       const decoded = jwt.verifyToken(req.cookies.refresh_token);
@@ -29,7 +29,7 @@ export class AuthController {
       }
     }
 
-    const user = await firstValueFrom(this.tcpUsers.send(PN.login, new NexPayload(pl)));
+    const user = await firstValueFrom(this.tcpUsers.send(PN.login, new NexPayload(data)));
     console.log('User:', user);
     const { access_token, refresh_token } = await this.sessionService.signAndSetSession(user, oldSessionId);
     const { accessTokenCookieOptions, refreshTokenCookieOptions } = await this.sessionService.getCookieOptions();

@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
-import { RegisterRequest, RegisterResponse } from '@app/common/dto/register-dto';
+import { RegisterRequest, RegisterResponse, LoginRequest, LoginResponse } from '@app/common/dto';
 import { UserEntity } from './entities/user.entity';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import bcrypt from 'bcryptjs';
 import { AuthenticationError, ConflictError } from '@app/common/errors';
-import { LoginRequest, LoginResponse } from '@app/common/dto/login-dto';
 
 @Injectable()
 export class UsersService {

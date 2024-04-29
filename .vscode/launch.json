@@ -6,7 +6,7 @@
   "compounds": [
     {
       "name": "Attach to All",
-      "configurations": ["Attach to API", "Attach to Orders", "Attach to Users"],
+      "configurations": ["Attach to API", "Attach to Orders", "Attach to Users", "Attach to Inventory"],
       "stopAll": true
     }
   ],
@@ -32,11 +32,21 @@
       "skipFiles": ["<node_internals>/**"]
     },
     {
-      "name": "Attach to Users",
+      "name": "Attach to Inventory",
       "type": "node",
       "request": "attach",
       "address": "localhost",
       "port": 9231,
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "/usr/src/app",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Attach to Users",
+      "type": "node",
+      "request": "attach",
+      "address": "localhost",
+      "port": 9232,
       "localRoot": "${workspaceFolder}",
       "remoteRoot": "/usr/src/app",
       "skipFiles": ["<node_internals>/**"]

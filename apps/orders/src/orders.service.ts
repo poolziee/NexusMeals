@@ -1,4 +1,4 @@
-import { ExampleRequest } from '@app/common/dto/example-request';
+import { ExampleRequest } from '@app/common/dto';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

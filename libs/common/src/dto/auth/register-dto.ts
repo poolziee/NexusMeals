@@ -1,6 +1,6 @@
 import { IsEnum, IsNotEmpty, IsString, Matches } from 'class-validator';
 import { AutoMap } from '@automapper/classes';
-import { Role } from '../roles';
+import { Role } from '../../roles';
 
 const passwordRegex: RegExp = /^(?!.*[\s])(?=.*[A-Z])(?=.*[.!@#$*])(?=.*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$/m;
 

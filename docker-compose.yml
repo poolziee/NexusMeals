@@ -24,6 +24,8 @@ services:
       - TCP_ORDERS_PORT=${TCP_ORDERS_PORT}
       - TCP_USERS_HOST=${TCP_USERS_HOST}
       - TCP_USERS_PORT=${TCP_USERS_PORT}
+      - TCP_INVENTORY_HOST=${TCP_INVENTORY_HOST}
+      - TCP_INVENTORY_PORT=${TCP_INVENTORY_PORT}
       - RABBITMQ_URI=${RABBITMQ_URI}
       - RMQ_ORDERS_QUEUE=${RMQ_ORDERS_QUEUE}
       - SECRET_KEY=${SECRET_KEY}
@@ -49,12 +51,47 @@ services:
       - TCP_ORDERS_HOST=${TCP_ORDERS_HOST}
       - TCP_ORDERS_PORT=${TCP_ORDERS_PORT}
   # ---------------------------------------------- #
+  inventory:
+    build:
+      context: .
+      dockerfile: ./apps/inventory/Dockerfile
+      target: development
+    command: npm run start:debug 0.0.0.0:9231 inventory
+    depends_on:
+      - rabbitmq
+      - inventory-db
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '${TCP_INVENTORY_PORT}:${TCP_INVENTORY_PORT}'
+      - '9231:9231'
+    environment:
+      - RABBITMQ_URI=${RABBITMQ_URI}
+      - RMQ_INVENTORY_QUEUE=${RMQ_INVENTORY_QUEUE}
+      - TCP_INVENTORY_HOST=${TCP_INVENTORY_HOST}
+      - TCP_INVENTORY_PORT=${TCP_INVENTORY_PORT}
+      - MYSQL_INVENTORY_URI=${MYSQL_INVENTORY_URI}
+
+  inventory-db:
+    image: mysql:5.7.20
+    container_name: '${MYSQL_INVENTORY_DB_NAME}'
+    environment:
+      - MYSQL_DATABASE=${MYSQL_INVENTORY_DB_NAME}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - /var/lib/users-db
+    ports:
+      - '7201:3306'
+  # ---------------------------------------------- #
   users:
     build:
       context: .
       dockerfile: ./apps/users/Dockerfile
       target: development
-    command: npm run start:debug 0.0.0.0:9231 users
+    command: npm run start:debug 0.0.0.0:9232 users
     depends_on:
       - rabbitmq
       - users-db
@@ -63,7 +100,7 @@ services:
       - /usr/src/app/node_modules
     ports:
       - '${TCP_USERS_PORT}:${TCP_USERS_PORT}'
-      - '9231:9231'
+      - '9232:9232'
     environment:
       - RABBITMQ_URI=${RABBITMQ_URI}
       - RMQ_USERS_QUEUE=${RMQ_USERS_QUEUE}
@@ -82,7 +119,7 @@ services:
     volumes:
       - /var/lib/users-db
     ports:
-      - '7201:3306'
+      - '7202:3307'
   # ---------------------------------------------- #
   phpmyadmin:
     image: phpmyadmin/phpmyadmin

@@ -1,4 +1,4 @@
-import { ErrorObject } from '@app/common/errors/ErrorObject';
+import { ErrorObject } from '@app/common/errors';
 import { Catch, ArgumentsHost, ExceptionFilter, BadRequestException } from '@nestjs/common';
 
 @Catch()
@@ -23,12 +23,6 @@ export class RpcExceptionFilter implements ExceptionFilter {
     } else if (exception instanceof BadRequestException) {
       console.log(exception);
       response.status(exception.getStatus()).json(exception.getResponse());
-    } else if ('status' in exception) {
-      console.log(exception);
-      response.status(exception.status).json({
-        statusCode: exception.status,
-        message: exception.message,
-      });
     } else {
       console.log(exception);
       response.status(500).json({

@@ -1,7 +1,7 @@
 import { RMQ_USERS, TCP_USERS } from '@app/common/constants';
 import { RmqService, TcpService } from '@app/common';
 
-import { ErrorLoggerInterceptor } from '@app/common/middlewares/error-logger.interceptor';
+import { ErrorLoggerInterceptor } from '@app/common/middlewares';
 import { NestFactory } from '@nestjs/core';
 import { UsersModule } from './users.module';
 import { ValidationPipe } from '@nestjs/common';

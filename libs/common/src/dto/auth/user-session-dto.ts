@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty } from 'class-validator';
-import { Role } from '../roles';
+import { Role } from '../../roles';
 
 export class UserSession {
   @IsNotEmpty()

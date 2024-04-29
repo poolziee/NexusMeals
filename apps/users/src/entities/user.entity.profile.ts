@@ -3,9 +3,8 @@ import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { createMap, forMember, ignore, mapFrom, Mapper } from '@automapper/core';
 import { Injectable } from '@nestjs/common';
 import { UserEntity } from './user.entity';
-import { RegisterRequest, RegisterResponse } from '@app/common/dto/register-dto';
+import { RegisterRequest, RegisterResponse, LoginResponse } from '@app/common/dto';
 import bcrypt from 'bcryptjs';
-import { LoginResponse } from '@app/common/dto/login-dto';
 import { Role } from '@app/common/roles';
 
 @Injectable()

@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
-import { TCP_ORDERS, TCP_USERS, RMQ_ORDERS, REDIS_SESSIONS } from '@app/common/constants';
+import { TCP_ORDERS, TCP_USERS, RMQ_ORDERS, REDIS_SESSIONS, TCP_INVENTORY } from '@app/common/constants';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { RmqModule, TcpModule } from '@app/common';
-import { AuthController, OrdersController } from './controllers';
+import { AuthController, InventoryController, OrdersController } from './controllers';
 import { SessionService } from './session.service';
 import { RedisModule } from '@app/common/redis/redis.module';
 
@@ -22,6 +22,9 @@ import { RedisModule } from '@app/common/redis/redis.module';
         TCP_USERS_HOST: Joi.string().required(),
         TCP_USERS_PORT: Joi.string().required(),
 
+        TCP_INVENTORY_HOST: Joi.string().required(),
+        TCP_INVENTORY_PORT: Joi.string().required(),
+
         RABBITMQ_URI: Joi.string().required(),
         RMQ_ORDERS_QUEUE: Joi.string().required(),
 
@@ -33,11 +36,12 @@ import { RedisModule } from '@app/common/redis/redis.module';
     }),
     TcpModule.register(TCP_ORDERS),
     TcpModule.register(TCP_USERS),
+    TcpModule.register(TCP_INVENTORY),
     RmqModule.register({ name: RMQ_ORDERS, other: 0 }),
     AutomapperModule.forRoot({ strategyInitializer: classes() }),
     RedisModule.register(REDIS_SESSIONS),
   ],
-  controllers: [AuthController, OrdersController],
+  controllers: [AuthController, OrdersController, InventoryController],
   providers: [SessionService],
 })
 export class ApiModule {}

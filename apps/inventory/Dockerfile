@@ -8,7 +8,7 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build products
+RUN npm run build inventory
 
 FROM node:alpine as production
 
@@ -23,4 +23,4 @@ RUN npm install --only=production
 
 COPY --from=development /usr/src/app/dist ./dist
 
-CMD ["node", "dist/apps/products/main"]
+CMD ["node", "dist/apps/inventory/main"]

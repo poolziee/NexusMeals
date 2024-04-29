@@ -1,4 +1,4 @@
-describe('ProductsController (e2e)', () => {
+describe('InventoryController (e2e)', () => {
   it('/ (GET)', () => {
     return expect(true).toBe(true);
   });

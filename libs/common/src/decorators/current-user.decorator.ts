@@ -1,5 +1,5 @@
-import { UserSession } from '@app/common/dto/user-session-dto';
-import { UnexpectedError } from '@app/common/errors/UnexpectedError';
+import { UserSession } from '@app/common/dto';
+import { UnexpectedError } from '@app/common/errors';
 import { ExecutionContext, createParamDecorator } from '@nestjs/common';
 
 export const CurrentUser = createParamDecorator<UserSession>(

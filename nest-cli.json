@@ -37,13 +37,13 @@
         "tsConfigPath": "apps/orders/tsconfig.app.json"
       }
     },
-    "products": {
+    "inventory": {
       "type": "application",
-      "root": "apps/products",
+      "root": "apps/inventory",
       "entryFile": "main",
-      "sourceRoot": "apps/products/src",
+      "sourceRoot": "apps/inventory/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/products/tsconfig.app.json"
+        "tsConfigPath": "apps/inventory/tsconfig.app.json"
       }
     },
     "users": {

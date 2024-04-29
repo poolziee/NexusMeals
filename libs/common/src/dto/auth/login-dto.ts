@@ -1,6 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 import { IsNotEmpty } from 'class-validator';
-import { Role } from '../roles';
+import { Role } from '../../roles';
 
 export class LoginRequest {
   @IsNotEmpty()

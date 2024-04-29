@@ -18,8 +18,8 @@ export class OrdersController {
 
   @Post()
   @Roles(Role.CUSTOMER)
-  async pubSubExample(@CurrentUser() user: UserSession, @Body() pl: ExampleRequest) {
-    await lastValueFrom(this.rmqOrders.emit(PN.pub_sub_example, new NexPayload(pl, user)));
+  async pubSubExample(@CurrentUser() user: UserSession, @Body() data: ExampleRequest) {
+    await lastValueFrom(this.rmqOrders.emit(PN.pub_sub_example, new NexPayload(data, user)));
     return `ApiService.pubSubExample emitted.`;
   }
 

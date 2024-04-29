@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsObject, ValidateIf, ValidateNested } from 'class-validator';
-import { UserSession } from './user-session-dto';
+import { UserSession } from './auth';
 
 export class NexPayload<T> {
   constructor(data: T, user: UserSession = null) {
