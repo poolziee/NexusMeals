@@ -13,6 +13,7 @@ export function DbModule({ name }: DbModuleOptions) {
       synchronize: true, // TODO: Do not use in production. Might cause data loss.
       logging: true,
       autoLoadEntities: true,
+      retryAttempts: 40,
     }),
     inject: [ConfigService],
   });
