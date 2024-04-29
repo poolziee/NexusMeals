@@ -26,8 +26,24 @@ export class UserEntityProfile extends AutomapperProfile {
           mapFrom((src) => bcrypt.hashSync(src.password, bcrypt.genSaltSync(12))),
         ),
       );
-      createMap(mapper, UserEntity, RegisterResponse);
-      createMap(mapper, UserEntity, LoginResponse);
+      createMap(
+        mapper,
+        UserEntity,
+        RegisterResponse,
+        forMember(
+          (dest) => dest.role,
+          mapFrom((src) => src.role),
+        ),
+      );
+      createMap(
+        mapper,
+        UserEntity,
+        LoginResponse,
+        forMember(
+          (dest) => dest.role,
+          mapFrom((src) => src.role),
+        ),
+      );
     };
   }
 }
