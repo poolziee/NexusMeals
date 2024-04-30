@@ -23,7 +23,7 @@ export class RegisterRequest {
   @AutoMap()
   password: string;
 
-  @AutoMap()
+  @AutoMap(() => String)
   @IsEnum(Role)
   role: Role;
 
@@ -58,7 +58,7 @@ export class RegisterResponse {
   @AutoMap()
   createdAt: string;
 
-  @AutoMap()
+  @AutoMap(() => String)
   role: Role;
 
   @AutoMap()

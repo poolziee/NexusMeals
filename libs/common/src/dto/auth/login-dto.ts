@@ -25,7 +25,7 @@ export class LoginResponse {
   @AutoMap()
   createdAt: string;
 
-  @AutoMap()
+  @AutoMap(() => String)
   role: Role;
 
   @AutoMap()

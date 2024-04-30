@@ -12,7 +12,6 @@ import {
   UpdateChefCategoryOverviewDTO,
 } from '@app/common/dto';
 import bcrypt from 'bcryptjs';
-import { Role } from '@app/common/roles';
 import { ChefCategoryOverviewEntity } from './chef.category.overview.entity';
 
 @Injectable()
@@ -44,24 +43,8 @@ export class UserEntityProfile extends AutomapperProfile {
         ChefCategoryOverviewEntity,
         forMember((dest) => dest.chef, ignore()),
       );
-      createMap(
-        mapper,
-        UserEntity,
-        RegisterResponse,
-        forMember(
-          (dest) => dest.role,
-          mapFrom((src) => Role[src.role as keyof typeof Role]),
-        ),
-      );
-      createMap(
-        mapper,
-        UserEntity,
-        LoginResponse,
-        forMember(
-          (dest) => dest.role,
-          mapFrom((src) => Role[src.role as keyof typeof Role]),
-        ),
-      );
+      createMap(mapper, UserEntity, RegisterResponse);
+      createMap(mapper, UserEntity, LoginResponse);
       createMap(mapper, ChefCategoryOverviewEntity, ReadChefCategoryOverviewDTO);
       createMap(
         mapper,

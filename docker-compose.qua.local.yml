@@ -5,19 +5,14 @@ services:
     build:
       context: .
       dockerfile: ./apps/api/Dockerfile
-      target: development
-    command: npm run start:debug 0.0.0.0:9229
+      target: production
     depends_on:
       - orders
       - users
       - rabbitmq
       - redis_sessions
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
     ports:
       - '${API_PORT}:${API_PORT}'
-      - '9229:9229'
     environment:
       - API_PORT=${API_PORT}
       - TCP_ORDERS_HOST=${TCP_ORDERS_HOST}
@@ -34,16 +29,11 @@ services:
     build:
       context: .
       dockerfile: ./apps/orders/Dockerfile
-      target: development
-    command: npm run start:debug 0.0.0.0:9230 orders
+      target: production
     depends_on:
       - rabbitmq
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
     ports:
       - '${TCP_ORDERS_PORT}:${TCP_ORDERS_PORT}'
-      - '9230:9230'
     environment:
       - RABBITMQ_URI=${RABBITMQ_URI}
       - RMQ_ORDERS_QUEUE=${RMQ_ORDERS_QUEUE}
@@ -54,17 +44,12 @@ services:
     build:
       context: .
       dockerfile: ./apps/inventory/Dockerfile
-      target: development
-    command: npm run start:debug 0.0.0.0:9231 inventory
+      target: production
     depends_on:
       - rabbitmq
       - inventory-db
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
     ports:
       - '${TCP_INVENTORY_PORT}:${TCP_INVENTORY_PORT}'
-      - '9231:9231'
     environment:
       - RABBITMQ_URI=${RABBITMQ_URI}
       - RMQ_INVENTORY_QUEUE=${RMQ_INVENTORY_QUEUE}
@@ -91,17 +76,12 @@ services:
     build:
       context: .
       dockerfile: ./apps/users/Dockerfile
-      target: development
-    command: npm run start:debug 0.0.0.0:9232 users
+      target: production
     depends_on:
       - rabbitmq
       - users-db
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
     ports:
       - '${TCP_USERS_PORT}:${TCP_USERS_PORT}'
-      - '9232:9232'
     environment:
       - RABBITMQ_URI=${RABBITMQ_URI}
       - RMQ_USERS_QUEUE=${RMQ_USERS_QUEUE}

@@ -20,6 +20,6 @@ export class UserSession {
   email: string;
 
   @IsEnum(Role)
-  @AutoMap()
+  @AutoMap(() => String)
   role: Role;
 }

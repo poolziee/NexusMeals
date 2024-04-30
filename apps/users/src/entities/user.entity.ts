@@ -1,6 +1,7 @@
 import { AutoMap } from '@automapper/classes';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ChefCategoryOverviewEntity } from './chef.category.overview.entity';
+import { Role } from '@app/common/roles';
 
 @Entity('users')
 export class UserEntity {
@@ -24,9 +25,9 @@ export class UserEntity {
   @Column()
   passwordHash: string;
 
-  @AutoMap()
-  @Column()
-  role: string;
+  @AutoMap(() => String)
+  @Column('text')
+  role: Role;
 
   @AutoMap()
   @CreateDateColumn({
