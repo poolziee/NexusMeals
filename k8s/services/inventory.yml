@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: inventory
+  template:
+    metadata:
+      labels:
+        app: inventory
+    spec:
+      containers:
+        - name: inventory
+          image: poolziee/nexusmeals-inventory:latest
+          ports:
+            - containerPort: 3002 # Port for internal TCP communications
+          resources:
+            requests:
+              memory: '64Mi'
+              cpu: '250m'
+            limits:
+              memory: '128Mi'
+              cpu: '500m'
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              value: 'admin'
+            - name: RABBITMQ_DEFAULT_PASS
+              value: 'admin'
+            - name: RABBITMQ_PORT
+              value: '5672'
+            - name: RABBITMQ_HOST_NAME
+              value: 'rabbitmq'
+            - name: RABBITMQ_URI
+              value: amqp://admin:admin@rabbitmq:5672
+            - name: API_PORT
+              value: '3000'
+            - name: RMQ_ORDERS_QUEUE
+              value: 'orders'
+            - name: RMQ_INVENTORY_QUEUE
+              value: 'inventory'
+            - name: RMQ_USERS_QUEUE
+              value: 'users'
+            - name: TCP_ORDERS_HOST
+              value: 'orders-service'
+            - name: TCP_ORDERS_PORT
+              value: '3001'
+            - name: TCP_INVENTORY_HOST
+              value: '0.0.0.0'
+            - name: TCP_INVENTORY_PORT
+              value: '3002'
+            - name: TCP_USERS_HOST
+              value: 'users-service'
+            - name: TCP_USERS_PORT
+              value: '3003'
+            - name: MYSQL_USER
+              value: 'admin'
+            - name: MYSQL_PASSWORD
+              value: 'admin'
+            - name: MYSQL_ROOT_PASSWORD
+              value: 'admin'
+            - name: MYSQL_USERS_DB_NAME
+              value: 'users-db'
+            - name: MYSQL_USERS_URI
+              value: mysql://admin:admin@users-db/users-db
+            - name: MYSQL_INVENTORY_DB_NAME
+              value: 'inventory-db'
+            - name: MYSQL_INVENTORY_URI
+              value: mysql://admin:admin@inventory-db/inventory-db
+            - name: SECRET_KEY
+              value: 'jwtSecret1337'
+            - name: REDIS_SESSIONS_HOST
+              value: 'redis-sessions-service'
+            - name: REDIS_SESSIONS_PORT
+              value: '6379'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: inventory-service
+spec:
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 3002
+      targetPort: 3002
+  selector:
+    app: inventory

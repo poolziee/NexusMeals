@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis-sessions
+spec:
+  serviceName: 'redis-sessions'
+  replicas: 1 # Adjust the number of replicas based on your requirements
+  selector:
+    matchLabels:
+      app: redis-sessions
+  template:
+    metadata:
+      labels:
+        app: redis-sessions
+    spec:
+      containers:
+        - name: redis-sessions
+          image: redis:latest
+          ports:
+            - containerPort: 6379 # Redis default port
+          resources:
+            requests:
+              memory: '128Mi' # Adjust based on your Redis usage
+              cpu: '100m'
+            limits:
+              memory: '256Mi'
+              cpu: '200m'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-sessions-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    app: redis-sessions

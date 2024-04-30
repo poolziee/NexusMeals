@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+  labels:
+    app: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+        - name: rabbitmq
+          image: rabbitmq:latest
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              value: 'admin' # Default user (consider using Secrets for production)
+            - name: RABBITMQ_DEFAULT_PASS
+              value: 'admin' # Default password (consider using Secrets for production)
+          ports:
+            - name: internal
+              containerPort: 5672
+          resources:
+            limits:
+              cpu: '1'
+              memory: '1Gi'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+  labels:
+    app: rabbitmq
+spec:
+  ports:
+    - port: 5672
+      protocol: TCP
+      name: internal
+  selector:
+    app: rabbitmq
+  type: NodePort
