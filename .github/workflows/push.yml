@@ -20,6 +20,8 @@ jobs:
             image: poolziee/nexusmeals-orders
           - dockerfile: ./apps/users/Dockerfile
             image: poolziee/nexusmeals-users
+          - dockerfile: ./apps/inventory/Dockerfile
+            image: poolziee/nexusmeals-inventory
 
     steps:
       - name: Checkout repository
