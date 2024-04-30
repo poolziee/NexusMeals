@@ -42,6 +42,10 @@ export abstract class AbstractRepository<T extends HasId> {
     return await this.entity.find(relations);
   }
 
+  public async findOneWithRelations(relations: FindManyOptions<T>): Promise<T> {
+    return await this.entity.findOne(relations);
+  }
+
   public async findAll(options?: FindManyOptions<T>): Promise<T[]> {
     return await this.entity.find(options);
   }

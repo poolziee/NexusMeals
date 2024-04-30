@@ -23,4 +23,9 @@ export enum PN {
   create_product = 'create_product',
   update_product = 'update_product',
   delete_product = 'delete_product',
+  get_chefs = 'get_chefs',
+  update_chef_category_overview = 'update_chef_category_overview',
+  delete_chef_category_overview = 'delete_chef_category_overview',
+  add_product_to_chef_category_overview = 'add_product_to_chef_category_overview',
+  remove_product_from_chef_category_overview = 'remove_product_from_chef_category_overview',
 }

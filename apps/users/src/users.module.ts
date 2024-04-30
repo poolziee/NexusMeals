@@ -5,12 +5,11 @@ import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
 import { RmqModule, DbModule, TcpModule } from '@app/common';
 import { USERS_DB } from '@app/common/constants';
-import { UsersRepository } from './users.repository';
-import { UserEntity } from './entities/user.entity';
+import { UsersRepository, ChefCategoryOverviewRepository } from './repositories';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
-import { UserEntityProfile } from './entities/user.entity.profile';
+import { ChefCategoryOverviewEntity, UserEntity, UserEntityProfile } from './entities';
 
 @Module({
   imports: [
@@ -29,11 +28,11 @@ import { UserEntityProfile } from './entities/user.entity.profile';
     RmqModule,
     TcpModule,
     DbModule({ name: USERS_DB }),
-    TypeOrmModule.forFeature([UserEntity]),
+    TypeOrmModule.forFeature([UserEntity, ChefCategoryOverviewEntity]),
     AutomapperModule.forRoot({ strategyInitializer: classes() }),
   ],
   controllers: [UsersController],
   // TODO: Interfaces instead of classes for testing purposes. Applies for all services' modules.
-  providers: [UsersService, UsersRepository, UserEntityProfile],
+  providers: [UsersService, UsersRepository, ChefCategoryOverviewRepository, UserEntityProfile],
 })
 export class UsersModule {}

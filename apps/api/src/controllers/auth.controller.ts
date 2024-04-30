@@ -1,17 +1,20 @@
 import { Body, Controller, Get, Inject, Post, Req, Res } from '@nestjs/common';
 import { PN, TCP_USERS } from '@app/common/constants';
-import { LoginRequest, RegisterRequest, NexPayload } from '@app/common/dto';
+import { LoginRequest, RegisterRequest, NexPayload, LoginResponse, UserSession } from '@app/common/dto';
 import { SessionService } from '../session.service';
 import jwt from '../utils/jwt';
 import { AuthenticationError, AuthorizationError } from '@app/common/errors';
 import { firstValueFrom } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
+import { InjectMapper } from '@automapper/nestjs';
+import { Mapper } from '@automapper/core';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     @Inject(TCP_USERS) private tcpUsers: ClientProxy,
     private readonly sessionService: SessionService,
+    @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
   @Post('register')
@@ -29,9 +32,11 @@ export class AuthController {
       }
     }
 
-    const user = await firstValueFrom(this.tcpUsers.send(PN.login, new NexPayload(data)));
-    console.log('User:', user);
-    const { access_token, refresh_token } = await this.sessionService.signAndSetSession(user, oldSessionId);
+    const user: LoginResponse = await firstValueFrom(this.tcpUsers.send(PN.login, new NexPayload(data)));
+    const { access_token, refresh_token } = await this.sessionService.signAndSetSession(
+      this.mapper.map(user, LoginResponse, UserSession),
+      oldSessionId,
+    );
     const { accessTokenCookieOptions, refreshTokenCookieOptions } = await this.sessionService.getCookieOptions();
     res.cookie('access_token', access_token, accessTokenCookieOptions);
     res.cookie('refresh_token', refresh_token, refreshTokenCookieOptions);

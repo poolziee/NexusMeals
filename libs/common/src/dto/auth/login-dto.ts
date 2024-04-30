@@ -27,4 +27,16 @@ export class LoginResponse {
 
   @AutoMap()
   role: Role;
+
+  @AutoMap()
+  city: string;
+
+  @AutoMap()
+  postalCode: string;
+
+  @AutoMap()
+  street: string;
+
+  @AutoMap()
+  houseNumber: string;
 }

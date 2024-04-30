@@ -5,9 +5,10 @@ import { TCP_ORDERS, TCP_USERS, RMQ_ORDERS, REDIS_SESSIONS, TCP_INVENTORY } from
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { RmqModule, TcpModule } from '@app/common';
-import { AuthController, InventoryController, OrdersController } from './controllers';
+import { AuthController, InventoryController, OrdersController, UsersController } from './controllers';
 import { SessionService } from './session.service';
 import { RedisModule } from '@app/common/redis/redis.module';
+import { UserSessionProfile } from './user-session.profile';
 
 @Module({
   imports: [
@@ -41,7 +42,7 @@ import { RedisModule } from '@app/common/redis/redis.module';
     AutomapperModule.forRoot({ strategyInitializer: classes() }),
     RedisModule.register(REDIS_SESSIONS),
   ],
-  controllers: [AuthController, OrdersController, InventoryController],
-  providers: [SessionService],
+  controllers: [AuthController, OrdersController, InventoryController, UsersController],
+  providers: [SessionService, UserSessionProfile],
 })
 export class ApiModule {}

@@ -35,7 +35,7 @@ export class ReadCategoryDTO {
   name: string;
 
   @AutoMap()
-  chefId: string;
+  chefId: number;
 
   @AutoMap()
   description: string;

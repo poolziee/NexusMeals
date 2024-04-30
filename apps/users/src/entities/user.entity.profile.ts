@@ -1,11 +1,19 @@
 /* istanbul ignore file */
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
-import { createMap, forMember, ignore, mapFrom, Mapper } from '@automapper/core';
+import { createMap, forMember, ignore, mapFrom, Mapper, mapWith } from '@automapper/core';
 import { Injectable } from '@nestjs/common';
 import { UserEntity } from './user.entity';
-import { RegisterRequest, RegisterResponse, LoginResponse } from '@app/common/dto';
+import {
+  RegisterRequest,
+  RegisterResponse,
+  LoginResponse,
+  ReadChefCategoryOverviewDTO,
+  ReadChefDTO,
+  UpdateChefCategoryOverviewDTO,
+} from '@app/common/dto';
 import bcrypt from 'bcryptjs';
 import { Role } from '@app/common/roles';
+import { ChefCategoryOverviewEntity } from './chef.category.overview.entity';
 
 @Injectable()
 export class UserEntityProfile extends AutomapperProfile {
@@ -32,6 +40,12 @@ export class UserEntityProfile extends AutomapperProfile {
       );
       createMap(
         mapper,
+        UpdateChefCategoryOverviewDTO,
+        ChefCategoryOverviewEntity,
+        forMember((dest) => dest.chef, ignore()),
+      );
+      createMap(
+        mapper,
         UserEntity,
         RegisterResponse,
         forMember(
@@ -46,6 +60,16 @@ export class UserEntityProfile extends AutomapperProfile {
         forMember(
           (dest) => dest.role,
           mapFrom((src) => Role[src.role as keyof typeof Role]),
+        ),
+      );
+      createMap(mapper, ChefCategoryOverviewEntity, ReadChefCategoryOverviewDTO);
+      createMap(
+        mapper,
+        UserEntity,
+        ReadChefDTO,
+        forMember(
+          (dest) => dest.categoryOverview,
+          mapWith(ReadChefCategoryOverviewDTO, ChefCategoryOverviewEntity, (src) => src.categoryOverview),
         ),
       );
     };

@@ -14,6 +14,7 @@ import {
   UpdateCategoryDTO,
   UpdateProductDTO,
   CategoryNoRelationsDTO,
+  UpdateChefCategoryOverviewDTO,
 } from '@app/common/dto';
 
 @Injectable()
@@ -75,6 +76,7 @@ export class InventoryProfile extends AutomapperProfile {
         forMember((dest) => dest.category, ignore()),
         forMember((dest) => dest.chefId, ignore()),
       );
+      createMap(mapper, ReadCategoryDTO, UpdateChefCategoryOverviewDTO);
     };
   }
 }

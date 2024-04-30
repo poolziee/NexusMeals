@@ -47,7 +47,7 @@ export class InventoryController {
   async handleUpdateCategory(
     @CurrentUser() chef: UserSession,
     @Payload() pl: NexPayload<UpdateCategoryDTO>,
-  ): Promise<ReadCategoryNoProductsDTO> {
+  ): Promise<ReadCategoryDTO> {
     return await this.inventoryService.updateCategory(pl.data, chef);
   }
 

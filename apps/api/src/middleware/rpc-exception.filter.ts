@@ -1,5 +1,5 @@
 import { ErrorObject } from '@app/common/errors';
-import { Catch, ArgumentsHost, ExceptionFilter, BadRequestException } from '@nestjs/common';
+import { Catch, ArgumentsHost, ExceptionFilter, BadRequestException, NotFoundException } from '@nestjs/common';
 
 @Catch()
 export class RpcExceptionFilter implements ExceptionFilter {
@@ -20,7 +20,7 @@ export class RpcExceptionFilter implements ExceptionFilter {
       console.log(exception);
       const err: ErrorObject = exception.error;
       this.transform(response, err);
-    } else if (exception instanceof BadRequestException) {
+    } else if (exception instanceof BadRequestException || exception instanceof NotFoundException) {
       console.log(exception);
       response.status(exception.getStatus()).json(exception.getResponse());
     } else {

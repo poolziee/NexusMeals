@@ -1,5 +1,6 @@
 import { AutoMap } from '@automapper/classes';
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { ChefCategoryOverviewEntity } from './chef.category.overview.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -34,4 +35,26 @@ export class UserEntity {
     default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt: string;
+
+  @AutoMap()
+  @Column()
+  city: string;
+
+  @AutoMap()
+  @Column()
+  postalCode: string;
+
+  @AutoMap()
+  @Column()
+  street: string;
+
+  @AutoMap()
+  @Column()
+  houseNumber: string;
+
+  @AutoMap()
+  @OneToMany(() => ChefCategoryOverviewEntity, (categoryOverview) => categoryOverview.chef, {
+    eager: true,
+  })
+  categoryOverview: ChefCategoryOverviewEntity[];
 }

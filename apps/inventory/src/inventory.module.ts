@@ -6,7 +6,7 @@ import { DbModule, RmqModule, TcpModule } from '@app/common';
 
 import { InventoryController } from './inventory.controller';
 import { InventoryService } from './inventory.service';
-import { INVENTORY_DB, RMQ_ORDERS } from '@app/common/constants';
+import { INVENTORY_DB, RMQ_ORDERS, RMQ_USERS } from '@app/common/constants';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { InventoryProfile } from './entities/inventory.profile';
@@ -23,6 +23,7 @@ import { CategoriesRepository, ProductsRepository } from './repositories';
         RABBITMQ_URI: Joi.string().required(),
         RMQ_INVENTORY_QUEUE: Joi.string().required(),
         RMQ_ORDERS_QUEUE: Joi.string().required(),
+        RMQ_USERS_QUEUE: Joi.string().required(),
 
         TCP_INVENTORY_HOST: Joi.string().required(),
         TCP_INVENTORY_PORT: Joi.string().required(),
@@ -32,6 +33,10 @@ import { CategoriesRepository, ProductsRepository } from './repositories';
     }),
     RmqModule.register({
       name: RMQ_ORDERS,
+      other: 0,
+    }),
+    RmqModule.register({
+      name: RMQ_USERS,
       other: 0,
     }),
     TcpModule,

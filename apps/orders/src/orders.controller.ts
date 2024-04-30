@@ -20,7 +20,6 @@ export class OrdersController {
 
   @EventPattern(PN.pub_sub_example, Transport.RMQ)
   async handlePubSubExample(@CurrentUser() user: UserSession, @Payload() pl: NexPayload<ExampleRequest>) {
-    console.log('Received user:', user);
     this.ordersService.pubSubExample(pl.data);
   }
 }
