@@ -15,7 +15,6 @@ export enum PN {
   login = 'login',
   register = 'register',
   rpc_example = 'rpc_example',
-  pub_sub_example = 'pub_sub_example',
   create_category = 'create_category',
   read_categories = 'read_categories',
   update_category = 'update_category',
