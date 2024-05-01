@@ -1,4 +1,4 @@
-name: push
+name: build-and-push
 
 on:
   push:
@@ -70,6 +70,8 @@ jobs:
           echo "TODO: Start load tests."
 
       - name: Cleanup
+        if: always()
         run: |
-          echo "TODO: Cleanup nex-config."
+          kubectl delete -f nex-config.yml
           echo "TODO: Cleanup NexusMeals cluster."
+          rm -r *
