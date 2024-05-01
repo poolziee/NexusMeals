@@ -59,11 +59,20 @@ spec:
             - name: MYSQL_DATABASE
               value: 'users-db'
             - name: MYSQL_USER
-              value: 'admin'
+              valueFrom:
+                configMapKeyRef:
+                  name: nex-config
+                  key: MYSQL_USER
             - name: MYSQL_PASSWORD
-              value: 'admin'
+              valueFrom:
+                configMapKeyRef:
+                  name: nex-config
+                  key: MYSQL_PASSWORD
             - name: MYSQL_ROOT_PASSWORD
-              value: 'admin'
+              valueFrom:
+                configMapKeyRef:
+                  name: nex-config
+                  key: MYSQL_ROOT_PASSWORD
           ports:
             - containerPort: 3307
               name: users-db

@@ -19,9 +19,15 @@ spec:
           image: rabbitmq:latest
           env:
             - name: RABBITMQ_DEFAULT_USER
-              value: 'admin' # Default user (consider using Secrets for production)
+              valueFrom:
+                configMapKeyRef:
+                  name: nex-config
+                  key: RABBITMQ_DEFAULT_USER
             - name: RABBITMQ_DEFAULT_PASS
-              value: 'admin' # Default password (consider using Secrets for production)
+              valueFrom:
+                configMapKeyRef:
+                  name: nex-config
+                  key: RABBITMQ_DEFAULT_PASS
           ports:
             - name: internal
               containerPort: 5672
