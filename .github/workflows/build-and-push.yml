@@ -71,5 +71,5 @@ jobs:
 
       - name: Cleanup
         run: |
-          kubectl delete -f nex-config.yml
+          echo "TODO: Cleanup nex-config."
           echo "TODO: Cleanup NexusMeals cluster."
