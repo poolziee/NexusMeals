@@ -17,11 +17,6 @@ export class AuthController {
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
-  @Get('test-latest')
-  async testLatest() {
-    return 'This is the latest image.';
-  }
-
   @Post('register')
   async register(@Body() data: RegisterRequest) {
     return await firstValueFrom(this.tcpUsers.send(PN.register, new NexPayload(data)));
