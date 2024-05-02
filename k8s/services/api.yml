@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
         - name: api
-          image: 'poolziee/nexusmeals-api:latest'
+          image: poolziee/nexusmeals-api:latest
+          imagePullPolicy: Always
           resources:
             requests:
               memory: '64Mi'

@@ -12,7 +12,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # TODO: Databases, rmq, redis.
         include:
           - dockerfile: ./apps/api/Dockerfile
             image: poolziee/nexusmeals-api
@@ -75,5 +74,4 @@ jobs:
         run: |
           kubectl delete -f nex-config.yml
           kubectl delete -f k8s/ --recursive
-          echo "TODO: Cleanup NexusMeals cluster."
           rm -r *

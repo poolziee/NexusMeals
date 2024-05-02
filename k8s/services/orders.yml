@@ -15,6 +15,7 @@ spec:
       containers:
         - name: orders
           image: poolziee/nexusmeals-orders:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 3001 # Port for internal TCP communications
           resources:
