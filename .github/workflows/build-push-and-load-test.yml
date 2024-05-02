@@ -63,7 +63,7 @@ jobs:
       - name: Start the cluster
         run: |
           kubectl apply -f k8s/prod/ --recursive
-          sleep 10s
+          sleep 30s
 
       - name: Wait for pods to be ready
         run: |
