@@ -62,7 +62,7 @@ jobs:
 
       - name: Start the cluster
         run: |
-          kubectl apply -f k8s/ --recursive
+          kubectl apply -f k8s/prod/ --recursive
 
       - name: Wait for pods to be ready
         run: |
@@ -81,5 +81,5 @@ jobs:
         if: always()
         run: |
           kubectl delete -f nex-config.yml
-          kubectl delete -f k8s/ --recursive
+          kubectl delete -f k8s/prod/ --recursive
           rm -r *
