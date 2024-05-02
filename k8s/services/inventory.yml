@@ -17,7 +17,7 @@ spec:
           image: poolziee/nexusmeals-inventory:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 3002 # Port for internal TCP communications
+            - containerPort: 3002
           resources:
             requests:
               memory: '64Mi'

@@ -1,4 +1,4 @@
-name: build-and-push
+name: build-push-and-load-test
 
 on:
   push:
@@ -64,9 +64,17 @@ jobs:
         run: |
           kubectl apply -f k8s/ --recursive
 
+      - name: Wait for pods to be ready
+        run: |
+          kubectl wait --for=condition=Ready pod --all --timeout=180s
+
+      - name: Wait for services to be ready
+        run: |
+          echo "TODO: Apply health checks in manifests instead of sleeping."
+          sleep 60s
+
       - name: Load test
         run: |
-          sleep 60s
           echo "TODO: Start load tests."
 
       - name: Cleanup

@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: users
 spec:
-  replicas: 3 # Adjust the number of replicas as needed
+  replicas: 3
   selector:
     matchLabels:
       app: users
@@ -17,7 +17,7 @@ spec:
           image: poolziee/nexusmeals-users:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 3003 # Port for internal TCP communications
+            - containerPort: 3003
           resources:
             requests:
               memory: '64Mi'

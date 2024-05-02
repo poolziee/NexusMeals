@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: orders
 spec:
-  replicas: 3 # Ensures high availability with two replicas
+  replicas: 3
   selector:
     matchLabels:
       app: orders
@@ -17,7 +17,7 @@ spec:
           image: poolziee/nexusmeals-orders:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 3001 # Port for internal TCP communications
+            - containerPort: 3001
           resources:
             requests:
               memory: '64Mi'
