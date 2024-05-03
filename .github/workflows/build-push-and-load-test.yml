@@ -75,23 +75,24 @@ jobs:
           echo "TODO: Apply health checks in manifests instead of sleeping."
           sleep 60s
 
-  load-testing:
-    needs: start-cluster
+  load-test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Load test
-        run: |
-          echo "TODO: Start load tests."
-          sleep 60s
-          exit 1
+      - name: Run local k6 test
+        uses: grafana/k6-action@v0.3.1
+        with:
+          filename: tests/load-test.js
+          flags: --env DOMAIN=${{ secrets.NEX_QUA_DOMAIN }}
+          cloud: true
+          token: ${{ secrets.K6_CLOUD_TOKEN }}
 
   cleanup:
     runs-on: self-hosted
-    needs: load-testing
+    needs: load-test
     if: always()
     steps:
       - name: Cleanup
