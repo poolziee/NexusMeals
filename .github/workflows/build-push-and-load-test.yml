@@ -73,7 +73,7 @@ jobs:
       - name: Wait for services to be ready
         run: |
           echo "TODO: Apply health checks in manifests instead of sleeping."
-          sleep 60s
+          sleep 180s
 
   load-test:
     needs: start-cluster
