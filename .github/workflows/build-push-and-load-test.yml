@@ -62,7 +62,7 @@ jobs:
 
       - name: Start the cluster
         run: |
-          kubectl apply -f k8s/ingress-qua.yml
+          kubectl apply -f k8s/ingress-prod.yml
           kubectl apply -f k8s/prod/ --recursive
           sleep 30s
 
@@ -97,6 +97,6 @@ jobs:
       - name: Cleanup
         run: |
           kubectl delete -f nex-config.yml
-          kubectl delete -f k8s/ingress-qua.yml
+          kubectl delete -f k8s/ingress-prod.yml
           kubectl delete -f k8s/prod/ --recursive
           rm -r *
