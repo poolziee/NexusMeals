@@ -55,7 +55,6 @@ spec:
         - image: mysql:5.7.20
           name: inventory-db
           env:
-            # Use secret in real usage
             - name: MYSQL_DATABASE
               value: 'inventory-db'
             - name: MYSQL_USER
