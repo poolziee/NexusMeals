@@ -62,7 +62,7 @@ jobs:
 
       - name: Start the cluster
         run: |
-          kubectl apply -f k8s/ingress-prod.yml
+          kubectl apply -f k8s/ingress-qua.yml
           kubectl apply -f k8s/prod/ --recursive
           sleep 30s
 
@@ -80,14 +80,10 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Run cloud k6 test
         uses: grafana/k6-action@v0.3.1
         with:
           filename: tests/load-test.js
-          flags: --env DOMAIN=${{ secrets.NEX_QUA_DOMAIN }}
           # cloud: true
           # token: ${{ secrets.K6_CLOUD_TOKEN }}
 
@@ -99,6 +95,6 @@ jobs:
       - name: Cleanup
         run: |
           kubectl delete -f nex-config.yml
-          kubectl delete -f k8s/ingress-prod.yml
+          kubectl delete -f k8s/ingress-qua.yml
           kubectl delete -f k8s/prod/ --recursive
           rm -r *

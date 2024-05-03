@@ -2,7 +2,7 @@ import http from 'k6/http';
 import { check, sleep } from 'k6';
 
 export default function () {
-  const url = (slug) => `http://${__ENV.DOMAIN}/${slug}`;
+  const url = (slug) => `http://nex-api.local/${slug}`;
   const registerData = {
     firstName: 'John',
     lastName: 'Doe',
