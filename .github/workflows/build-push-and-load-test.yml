@@ -76,13 +76,14 @@ jobs:
           sleep 60s
 
   load-test:
+    needs: start-cluster
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run local k6 test
+      - name: Run cloud k6 test
         uses: grafana/k6-action@v0.3.1
         with:
           filename: tests/load-test.js
