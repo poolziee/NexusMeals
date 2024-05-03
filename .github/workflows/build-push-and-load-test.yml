@@ -80,12 +80,9 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Run cloud k6 test
-        uses: grafana/k6-action@v0.3.1
-        with:
-          filename: tests/load-test.js
-          # cloud: true
-          # token: ${{ secrets.K6_CLOUD_TOKEN }}
+      - name: Run k6 test
+        run: |
+          k6 run tests/load-test.js
 
   cleanup:
     runs-on: self-hosted
