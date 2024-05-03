@@ -77,7 +77,7 @@ jobs:
 
   load-test:
     needs: start-cluster
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Checkout repository
@@ -88,8 +88,8 @@ jobs:
         with:
           filename: tests/load-test.js
           flags: --env DOMAIN=${{ secrets.NEX_QUA_DOMAIN }}
-          cloud: true
-          token: ${{ secrets.K6_CLOUD_TOKEN }}
+          # cloud: true
+          # token: ${{ secrets.K6_CLOUD_TOKEN }}
 
   cleanup:
     runs-on: self-hosted
