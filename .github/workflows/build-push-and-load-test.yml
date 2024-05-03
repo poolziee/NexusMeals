@@ -73,7 +73,7 @@ jobs:
       - name: Wait for services to be ready
         run: |
           echo "TODO: Apply health checks in manifests instead of sleeping."
-          sleep 300s
+          sleep 120s
 
   load-test:
     needs: start-cluster
@@ -94,4 +94,5 @@ jobs:
           kubectl delete -f nex-config.yml
           kubectl delete -f k8s/ingress-qua.yml
           kubectl delete -f k8s/prod/ --recursive
+          kubectl delete pvc --all
           rm -r *
