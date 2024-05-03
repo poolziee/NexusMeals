@@ -47,7 +47,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-  load-test:
+  start-cluster:
     runs-on: self-hosted
     needs: build-and-push
 
@@ -75,14 +75,31 @@ jobs:
           echo "TODO: Apply health checks in manifests instead of sleeping."
           sleep 60s
 
+  load-testing:
+    needs: start-cluster
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Load test
         run: |
           echo "TODO: Start load tests."
+          sleep 60s
+          exit 1
 
+  cleanup:
+    runs-on: self-hosted
+    needs: load-testing
+    if: always()
+    steps:
       - name: Cleanup
-        if: always()
         run: |
-          kubectl delete -f nex-config.yml
-          kubectl delete -f k8s/ingress-qua.yml
-          kubectl delete -f k8s/prod/ --recursive
-          rm -r *
+          echo "Delete everything in:"
+          pwd
+        # run: |
+        #   kubectl delete -f nex-config.yml
+        #   kubectl delete -f k8s/ingress-qua.yml
+        #   kubectl delete -f k8s/prod/ --recursive
+        #   rm -r *
