@@ -34,7 +34,6 @@ spec:
     - port: 3306
   selector:
     app: inventory-db
-  clusterIP: None
 ---
 apiVersion: apps/v1
 kind: Deployment

@@ -49,4 +49,3 @@ spec:
       name: internal
   selector:
     app: rabbitmq
-  type: NodePort

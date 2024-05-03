@@ -34,7 +34,6 @@ spec:
     - port: 3307
   selector:
     app: users-db
-  clusterIP: None
 ---
 apiVersion: apps/v1
 kind: Deployment
