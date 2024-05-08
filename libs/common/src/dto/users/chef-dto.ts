@@ -61,6 +61,9 @@ export class ReadChefDTO {
   email: string;
 
   @AutoMap()
+  username: string;
+
+  @AutoMap()
   city: string;
 
   @AutoMap()

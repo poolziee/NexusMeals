@@ -12,6 +12,7 @@ export const INVENTORY_DB = 'INVENTORY';
 export const REDIS_SESSIONS = 'REDIS_SESSIONS';
 
 export enum PN {
+  user_by_id = 'user_by_id',
   login = 'login',
   register = 'register',
   rpc_example = 'rpc_example',

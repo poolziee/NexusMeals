@@ -11,6 +11,8 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new RpcExceptionFilter());
   app.use(cookieParser());
+  // TODO: add production origin.
+  app.enableCors({ origin: ['http://localhost:7000', '*'], credentials: true });
   await app.listen(env.get('API_PORT'));
 }
 bootstrap();

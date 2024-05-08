@@ -8,6 +8,7 @@ import {
   ReadChefsRequest,
   UpdateChefCategoryOverviewDTO,
   DeleteCategoryRequest,
+  UserSession,
 } from '@app/common/dto';
 import { UserEntity } from './entities/user.entity';
 import { InjectMapper } from '@automapper/nestjs';
@@ -27,17 +28,30 @@ export class UsersService {
   ) {}
 
   async login(req: LoginRequest): Promise<LoginResponse> {
-    const user = await this.userRepo.findOneBy({ email: req.email });
+    let user = await this.userRepo.findOneBy({ username: req.username });
+    if (!user) {
+      user = await this.userRepo.findOneBy({ email: req.username });
+    }
     if (!user || !bcrypt.compareSync(req.password, user.passwordHash)) {
-      throw new AuthenticationError('Invalid email or password.');
+      throw new AuthenticationError('Invalid username or password.');
     }
     return this.mapper.map(user, UserEntity, LoginResponse);
   }
 
+  async getUserById(id: number): Promise<UserSession | null> {
+    const user = await this.userRepo.findOneById(id);
+    return user ? this.mapper.map(user, UserEntity, UserSession) : null;
+  }
+
   async register(req: RegisterRequest): Promise<RegisterResponse> {
-    const exists = await this.userRepo.findOneBy({ email: req.email });
-    if (exists) {
-      throw new ConflictError(`User with email '${req.email} 'already exists.`);
+    const emailExists = await this.userRepo.exists({ email: req.email });
+    const usernameExists = await this.userRepo.exists({ username: req.username });
+    if (emailExists && usernameExists) {
+      throw new ConflictError(`Both email '${req.email}' and username '${req.username}' are already in use.`);
+    } else if (emailExists) {
+      throw new ConflictError(`Email '${req.email}' already in use.`);
+    } else if (usernameExists) {
+      throw new ConflictError(`Username '${req.username}' already in use.`);
     }
     let newUser = this.mapper.map(req, RegisterRequest, UserEntity);
     newUser = await this.userRepo.save(newUser);

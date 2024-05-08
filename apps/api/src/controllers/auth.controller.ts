@@ -37,70 +37,94 @@ export class AuthController {
       this.mapper.map(user, LoginResponse, UserSession),
       oldSessionId,
     );
-    const { accessTokenCookieOptions, refreshTokenCookieOptions } = await this.sessionService.getCookieOptions();
+    const { accessTokenCookieOptions, refreshTokenCookieOptions, currentUserCookieOptions } =
+      await this.sessionService.getCookieOptions();
     res.cookie('access_token', access_token, accessTokenCookieOptions);
     res.cookie('refresh_token', refresh_token, refreshTokenCookieOptions);
-
+    res.cookie('current_user', JSON.stringify(user), currentUserCookieOptions);
     return res.json(user);
   }
 
   @Get('refresh')
   async refresh(@Req() req, @Res() res) {
+    if (!req.cookies.refresh_token) {
+      throw new AuthenticationError('You are not logged in!');
+    }
     // Get the refresh token from cookie.
     const old_refresh_token = req.cookies.refresh_token as string;
 
     // Validate the Refresh token.
     const decoded = jwt.verifyToken(old_refresh_token);
-    const message = 'Could not refresh access token!';
-    if (!decoded) {
-      throw new AuthorizationError(message);
+
+    try {
+      const message = 'Could not refresh access token!';
+      if (!decoded) {
+        throw new AuthorizationError(message);
+      }
+
+      // Check if the user has a valid session.
+      let user: UserSession | null = await this.sessionService.getUserSession(decoded.sessionId);
+      if (!user) {
+        throw new AuthorizationError(message);
+      }
+
+      // TODO: Check if the user exists and update user variable.
+      user = await firstValueFrom(this.tcpUsers.send(PN.user_by_id, new NexPayload({ id: user.id })));
+      if (!user) {
+        throw new AuthorizationError('User does not exist anymore!');
+      }
+
+      // Sign new access token and update session.
+      const { access_token, refresh_token } = await this.sessionService.signAndSetSession(user, decoded.sessionId);
+
+      // Send token as cookie.
+      const { accessTokenCookieOptions, refreshTokenCookieOptions, currentUserCookieOptions } =
+        await this.sessionService.getCookieOptions();
+      res.cookie('access_token', access_token, accessTokenCookieOptions);
+      res.cookie('refresh_token', refresh_token, refreshTokenCookieOptions);
+      res.cookie('current_user', JSON.stringify(user), currentUserCookieOptions);
+      return res.json(user);
+    } catch (e) {
+      res.cookie('access_token', '', { maxAge: 1 });
+      res.cookie('refresh_token', '', { maxAge: 1 });
+      res.cookie('current_user', '', { maxAge: 1 });
+      if (decoded) await this.sessionService.deleteUserSession(decoded.sessionId);
+      throw e;
     }
-
-    // Check if the user has a valid session.
-    const user = await this.sessionService.getUserSession(decoded.sessionId);
-    if (!user) {
-      throw new AuthorizationError(message);
-    }
-
-    // TODO: Check if the user exists and update user variable.
-    if (!user) {
-      throw new AuthenticationError('User does not exist anymore!');
-    }
-
-    // Sign new access token and update session.
-    const { access_token, refresh_token } = await this.sessionService.signAndSetSession(user, decoded.sessionId);
-
-    // Send token as cookie.
-    const { accessTokenCookieOptions, refreshTokenCookieOptions } = await this.sessionService.getCookieOptions();
-    res.cookie('access_token', access_token, accessTokenCookieOptions);
-    res.cookie('refresh_token', refresh_token, refreshTokenCookieOptions);
-    return res.json(user);
   }
 
   @Get('logout')
   async logout(@Req() req, @Res() res) {
-    // Get the token
-    let access_token;
-    if (req.cookies.access_token) {
-      access_token = req.cookies.access_token;
+    try {
+      // Get the token
+      let refresh_token;
+      if (req.cookies.refresh_token) {
+        refresh_token = req.cookies.refresh_token;
+      }
+
+      if (!refresh_token) {
+        throw new AuthenticationError('You are not logged in!');
+      }
+
+      // Validate Access Token
+      const decoded = jwt.verifyToken(refresh_token);
+
+      if (!decoded) {
+        throw new AuthenticationError('Token invalid or expired.');
+      }
+
+      await this.sessionService.deleteUserSession(decoded.sessionId);
+
+      res.cookie('access_token', '', { maxAge: 1 });
+      res.cookie('refresh_token', '', { maxAge: 1 });
+      res.cookie('current_user', '', { maxAge: 1 });
+
+      return res.json('Logged out.');
+    } catch (e) {
+      res.cookie('access_token', '', { maxAge: 1 });
+      res.cookie('refresh_token', '', { maxAge: 1 });
+      res.cookie('current_user', '', { maxAge: 1 });
+      throw e;
     }
-
-    if (!access_token) {
-      throw new AuthenticationError('You are not logged in!');
-    }
-
-    // Validate Access Token
-    const decoded = jwt.verifyToken(access_token);
-
-    if (!decoded) {
-      throw new AuthenticationError('Token invalid or expired.');
-    }
-
-    await this.sessionService.deleteUserSession(decoded.sessionId);
-
-    res.cookie('access_token', '', { maxAge: 1 });
-    res.cookie('refresh_token', '', { maxAge: 1 });
-
-    return res.json('Logged out.');
   }
 }

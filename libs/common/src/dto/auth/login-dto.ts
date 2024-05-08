@@ -4,7 +4,9 @@ import { Role } from '../../roles';
 
 export class LoginRequest {
   @IsNotEmpty()
-  email: string;
+  @AutoMap()
+  username: string;
+
   @IsNotEmpty()
   password: string;
 }
@@ -21,6 +23,9 @@ export class LoginResponse {
 
   @AutoMap()
   email: string;
+
+  @AutoMap()
+  username: string;
 
   @AutoMap()
   createdAt: string;

@@ -19,6 +19,30 @@ export class UserSession {
   @AutoMap()
   email: string;
 
+  @IsNotEmpty()
+  @AutoMap()
+  username: string;
+
+  @IsNotEmpty()
+  @AutoMap()
+  createdAt: string;
+
+  @IsNotEmpty()
+  @AutoMap()
+  city: string;
+
+  @IsNotEmpty()
+  @AutoMap()
+  postalCode: string;
+
+  @IsNotEmpty()
+  @AutoMap()
+  street: string;
+
+  @IsNotEmpty()
+  @AutoMap()
+  houseNumber: string;
+
   @IsEnum(Role)
   @AutoMap(() => String)
   role: Role;

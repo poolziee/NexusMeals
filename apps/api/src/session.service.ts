@@ -26,7 +26,15 @@ export class SessionService {
       sameSite: 'lax',
     };
 
-    return { accessTokenCookieOptions, refreshTokenCookieOptions };
+    const currentUserCookieOptions = {
+      // After refresh token expires, user should be logged out.
+      expires: new Date(Date.now() + 60 * 60 * 24 * 7 * 60 * 1000),
+      maxAge: 60 * 60 * 24 * 7 * 60 * 1000,
+      httpOnly: false,
+      sameSite: 'lax',
+    };
+
+    return { accessTokenCookieOptions, refreshTokenCookieOptions, currentUserCookieOptions };
   }
 
   private toKey = (sessionId: string) => 'sess:' + sessionId;

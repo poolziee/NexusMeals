@@ -19,6 +19,10 @@ export class RegisterRequest {
   @AutoMap()
   email: string;
 
+  @IsNotEmpty()
+  @AutoMap()
+  username: string;
+
   @Matches(passwordRegex)
   @AutoMap()
   password: string;
@@ -54,6 +58,9 @@ export class RegisterResponse {
 
   @AutoMap()
   email: string;
+
+  @AutoMap()
+  username: string;
 
   @AutoMap()
   createdAt: string;

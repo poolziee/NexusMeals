@@ -10,6 +10,7 @@ import {
   ReadChefCategoryOverviewDTO,
   ReadChefDTO,
   UpdateChefCategoryOverviewDTO,
+  UserSession,
 } from '@app/common/dto';
 import bcrypt from 'bcryptjs';
 import { ChefCategoryOverviewEntity } from './chef.category.overview.entity';
@@ -45,6 +46,7 @@ export class UserEntityProfile extends AutomapperProfile {
       );
       createMap(mapper, UserEntity, RegisterResponse);
       createMap(mapper, UserEntity, LoginResponse);
+      createMap(mapper, UserEntity, UserSession);
       createMap(mapper, ChefCategoryOverviewEntity, ReadChefCategoryOverviewDTO);
       createMap(
         mapper,

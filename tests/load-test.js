@@ -7,6 +7,7 @@ export default function () {
     firstName: 'John',
     lastName: 'Doe',
     email: 'johnDoe1@mail.com',
+    username: 'johdoe',
     address: 'SomeAddress',
     password: 'Somepass123.',
     role: 'CHEF',
@@ -17,7 +18,7 @@ export default function () {
   };
 
   const loginData = {
-    email: 'johnDoe1@mail.com',
+    username: 'johdoe',
     password: 'Somepass123.',
   };
 

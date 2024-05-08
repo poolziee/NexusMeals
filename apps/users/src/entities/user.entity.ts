@@ -22,6 +22,10 @@ export class UserEntity {
   email: string;
 
   @AutoMap()
+  @Column({ unique: true })
+  username: string;
+
+  @AutoMap()
   @Column()
   passwordHash: string;
 

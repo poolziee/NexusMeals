@@ -3,7 +3,7 @@ import { Reflector } from '@nestjs/core';
 import { getAllowedRoles } from '../decorators/roles.decorator';
 import { SessionService } from '../session.service';
 import jwt from '../utils/jwt';
-import { AuthenticationError } from '@app/common/errors';
+import { AuthorizationError } from '@app/common/errors';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -20,19 +20,19 @@ export class AuthGuard implements CanActivate {
     }
 
     if (!access_token) {
-      throw new AuthenticationError('You are not logged in!');
+      throw new AuthorizationError('You are not logged in!');
     }
 
     // Validate Access Token
     const decoded = jwt.verifyToken(access_token);
 
     if (!decoded) {
-      throw new AuthenticationError(`Invalid token!`);
+      throw new AuthorizationError(`Invalid access token!`);
     }
 
     const user = await this.sessionService.getUserSession(decoded.sessionId);
     if (!user) {
-      throw new AuthenticationError(`User session has expired or user no longer exists.`);
+      throw new AuthorizationError(`User session has expired or user no longer exists.`);
     }
     req.user = user;
     const allowedRoles = getAllowedRoles(this.reflector, context);

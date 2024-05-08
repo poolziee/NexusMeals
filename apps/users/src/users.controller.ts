@@ -12,6 +12,7 @@ import {
   RegisterRequest,
   RegisterResponse,
   UpdateChefCategoryOverviewDTO,
+  UserSession,
 } from '@app/common/dto';
 
 @Controller()
@@ -29,6 +30,11 @@ export class UsersController {
   @MessagePattern(PN.login, Transport.TCP)
   async handleLogin(@Payload() pl: NexPayload<LoginRequest>): Promise<RegisterResponse> {
     return await this.usersService.login(pl.data);
+  }
+
+  @MessagePattern(PN.user_by_id, Transport.TCP)
+  async handleGetUserById(@Payload() pl: NexPayload<{ id: number }>): Promise<UserSession | null> {
+    return await this.usersService.getUserById(pl.data.id);
   }
 
   @MessagePattern(PN.get_chefs, Transport.TCP)
