@@ -139,9 +139,6 @@ export class InventoryService {
     if (!category) {
       throw new ConflictError(`Trying to update a product with non-existent category.`);
     }
-    if (category.chefId !== chef.id) {
-      throw new AuthorizationError('Trying to update a product with a category that does not belong to you.');
-    }
     product.name = req.name;
     product.description = req.description;
     product.quantity = req.quantity;
