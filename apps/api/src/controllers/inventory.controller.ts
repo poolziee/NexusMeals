@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Inject, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Inject, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../middleware/auth.guard';
 import { PN, TCP_INVENTORY } from '@app/common/constants';
 import { ClientProxy } from '@nestjs/microservices';
@@ -23,7 +23,7 @@ import { firstValueFrom } from 'rxjs';
 export class InventoryController {
   constructor(@Inject(TCP_INVENTORY) private tcpInventory: ClientProxy) {}
 
-  @Get('categories')
+  @Post('categories')
   async readCategories(@CurrentUser() user: UserSession, @Body() data: ReadCategoryRequest) {
     return await firstValueFrom(this.tcpInventory.send(PN.read_categories, new NexPayload(data, user)));
   }

@@ -58,7 +58,7 @@ export class InventoryService {
   }
 
   async createCategory(req: CreateCategoryDTO, chef: UserSession): Promise<ReadCategoryDTO> {
-    if (await this.categoryRepo.exists({ name: req.name })) {
+    if (await this.categoryRepo.exists({ name: req.name, chefId: chef.id })) {
       throw new ConflictError(`Category with name '${req.name}' already exists.`);
     }
     let category = this.mapper.map(req, CreateCategoryDTO, CategoryEntity);
@@ -111,33 +111,31 @@ export class InventoryService {
   /* ------------------------------------------------------------------------------------------------------------------ */
 
   async createProduct(req: CreateProductDTO, chef: UserSession): Promise<ReadProductDTO> {
-    if (await this.productRepo.exists({ name: req.name })) {
+    if (await this.productRepo.exists({ name: req.name, chefId: chef.id })) {
       throw new ConflictError(`Product with name '${req.name}' already exists.`);
     }
-    const category = await this.categoryRepo.findOneById(req.categoryId);
+    const category = await this.categoryRepo.findOneBy({ chefId: chef.id, name: req.category });
     if (!category) {
       throw new ConflictError(`Trying to create a product with non-existent category.`);
-    }
-    if (category.chefId !== chef.id) {
-      throw new AuthorizationError('Trying to create a product with a category that does not belong to you.');
     }
     let product = this.mapper.map(req, CreateProductDTO, ProductEntity);
     product.chefId = chef.id;
     product.category = category;
     product = await this.productRepo.save(product);
-    await this.add_product_to_chef_category_overview(req.categoryId);
+    await this.add_product_to_chef_category_overview(category.id);
     return this.mapper.map(product, ProductEntity, ReadProductDTO);
   }
 
   async updateProduct(req: UpdateProductDTO, chef: UserSession): Promise<ReadProductDTO> {
-    let product = await this.productRepo.findOneById(req.id);
+    let product = await this.productRepo.findOneWithRelations({ where: { id: req.id }, relations: ['category'] });
+    const oldCategoryId = product.category.id;
     if (!product) {
       throw new ConflictError(`Trying to update a product that does not exist.`);
     }
     if (product.chefId !== chef.id) {
       throw new AuthorizationError('Trying to update a product that does not belong to you.');
     }
-    const category = await this.categoryRepo.findOneById(req.categoryId);
+    const category = await this.categoryRepo.findOneBy({ chefId: chef.id, name: req.category });
     if (!category) {
       throw new ConflictError(`Trying to update a product with non-existent category.`);
     }
@@ -147,8 +145,14 @@ export class InventoryService {
     product.name = req.name;
     product.description = req.description;
     product.quantity = req.quantity;
+    product.price = req.price;
     product.category = category;
     product = await this.productRepo.save(product);
+    if (oldCategoryId !== product.category.id) {
+      console.log(product.category.id);
+      await this.remove_product_from_chef_category_overview(oldCategoryId);
+      await this.add_product_to_chef_category_overview(product.category.id);
+    }
     return this.mapper.map(product, ProductEntity, ReadProductDTO);
   }
 

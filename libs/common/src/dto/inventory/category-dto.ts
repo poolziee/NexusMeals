@@ -13,6 +13,9 @@ export class ProductNoRelationsDTO {
 
   @AutoMap()
   quantity: number;
+
+  @AutoMap()
+  price: number;
 }
 
 export class ReadCategoryRequest {

@@ -55,7 +55,8 @@ export class AuthController {
 
     // Validate the Refresh token.
     const decoded = jwt.verifyToken(old_refresh_token);
-
+    console.log('Refreshing.');
+    console.log(decoded);
     try {
       const message = 'Could not refresh access token!';
       if (!decoded) {
@@ -63,7 +64,9 @@ export class AuthController {
       }
 
       // Check if the user has a valid session.
-      let user: UserSession | null = await this.sessionService.getUserSession(decoded.sessionId);
+      let user = await this.sessionService.getUserSession(decoded.sessionId);
+      console.log('User logging.');
+      console.log(user);
       if (!user) {
         throw new AuthorizationError(message);
       }

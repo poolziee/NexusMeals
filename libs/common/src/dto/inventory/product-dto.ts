@@ -1,5 +1,5 @@
 import { AutoMap } from '@automapper/classes';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsPositive } from 'class-validator';
 
 export class CategoryNoRelationsDTO {
   @AutoMap()
@@ -35,6 +35,9 @@ export class ReadProductDTO {
 
   @AutoMap()
   category: CategoryNoRelationsDTO;
+
+  @AutoMap()
+  price: number;
 }
 
 export class CreateProductDTO {
@@ -51,7 +54,12 @@ export class CreateProductDTO {
   quantity: number;
 
   @IsNotEmpty()
-  categoryId: number;
+  category: string;
+
+  @AutoMap()
+  @IsNotEmpty()
+  @IsPositive()
+  price: number;
 }
 
 export class UpdateProductDTO {
@@ -72,5 +80,10 @@ export class UpdateProductDTO {
   quantity: number;
 
   @IsNotEmpty()
-  categoryId: number;
+  category: string;
+
+  @AutoMap()
+  @IsNotEmpty()
+  @IsPositive()
+  price: number;
 }

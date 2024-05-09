@@ -24,6 +24,10 @@ export class ProductEntity {
   @AutoMap()
   quantity: number;
 
+  @Column('decimal', { precision: 6, scale: 2 })
+  @AutoMap()
+  price: number;
+
   @ManyToOne(() => CategoryEntity, (category) => category.products)
   @AutoMap()
   category: CategoryEntity;
