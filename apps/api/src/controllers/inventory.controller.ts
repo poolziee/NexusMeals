@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Inject, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Inject, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../middleware/auth.guard';
 import { PN, TCP_INVENTORY } from '@app/common/constants';
 import { ClientProxy } from '@nestjs/microservices';
@@ -40,7 +40,7 @@ export class InventoryController {
     return await firstValueFrom(this.tcpInventory.send(PN.update_category, new NexPayload(data, user)));
   }
 
-  @Delete('category/delete')
+  @Post('category/delete')
   @Roles(Role.CHEF)
   async deleteCategory(@CurrentUser() user: UserSession, @Body() data: DeleteCategoryRequest) {
     return await firstValueFrom(this.tcpInventory.send(PN.delete_category, new NexPayload(data, user)));
@@ -60,7 +60,7 @@ export class InventoryController {
     return await firstValueFrom(this.tcpInventory.send(PN.update_product, new NexPayload(data, user)));
   }
 
-  @Delete('product/delete')
+  @Post('product/delete')
   @Roles(Role.CHEF)
   async deleteProduct(@CurrentUser() user: UserSession, @Body() data: DeleteProductRequest) {
     return await firstValueFrom(this.tcpInventory.send(PN.delete_product, new NexPayload(data, user)));
