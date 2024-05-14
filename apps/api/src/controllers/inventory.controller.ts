@@ -65,4 +65,24 @@ export class InventoryController {
   async deleteProduct(@CurrentUser() user: UserSession, @Body() data: DeleteProductRequest) {
     return await firstValueFrom(this.tcpInventory.send(PN.delete_product, new NexPayload(data, user)));
   }
+
+  /* ------------------------------------------------------------------------------------------------------------------ */
+
+  @Post('categories/generate')
+  @Roles(Role.CHEF)
+  async generateCategories(@CurrentUser() user: UserSession, @Body() data: CreateCategoryDTO[]) {
+    for (const category of data) {
+      await firstValueFrom(this.tcpInventory.send(PN.create_category, new NexPayload(category, user)));
+    }
+    return 'Categories generated';
+  }
+
+  @Post('products/generate')
+  @Roles(Role.CHEF)
+  async generateProducts(@CurrentUser() user: UserSession, @Body() data: CreateProductDTO[]) {
+    for (const product of data) {
+      await firstValueFrom(this.tcpInventory.send(PN.create_product, new NexPayload(product, user)));
+    }
+    return 'Products generated';
+  }
 }
