@@ -6,8 +6,9 @@ export const TCP_ORDERS = 'TCP_ORDERS';
 export const TCP_INVENTORY = 'TCP_INVENTORY';
 export const TCP_USERS = 'TCP_USERS';
 
-export const USERS_DB = 'USERS';
+export const ORDERS_DB = 'ORDERS';
 export const INVENTORY_DB = 'INVENTORY';
+export const USERS_DB = 'USERS';
 
 export const REDIS_SESSIONS = 'REDIS_SESSIONS';
 

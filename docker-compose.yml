@@ -47,8 +47,23 @@ services:
     environment:
       - RABBITMQ_URI=${RABBITMQ_URI}
       - RMQ_ORDERS_QUEUE=${RMQ_ORDERS_QUEUE}
+      - RMQ_INVENTORY_QUEUE=${RMQ_INVENTORY_QUEUE}
       - TCP_ORDERS_HOST=${TCP_ORDERS_HOST}
       - TCP_ORDERS_PORT=${TCP_ORDERS_PORT}
+      - MYSQL_ORDERS_URI=${MYSQL_ORDERS_URI}
+
+  orders-db:
+    image: mysql:5.7.20
+    container_name: '${MYSQL_ORDERS_DB_NAME}'
+    environment:
+      - MYSQL_DATABASE=${MYSQL_ORDERS_DB_NAME}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - /var/lib/users-db
+    ports:
+      - '7200:3305'
   # ---------------------------------------------- #
   inventory:
     build:
