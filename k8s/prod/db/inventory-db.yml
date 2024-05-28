@@ -24,10 +24,9 @@ spec:
       labels:
         app: inventory-db
     spec:
-      imagePullSecrets:
-        - name: dockerhub-secret
       containers:
         - image: mysql:5.7.20
+          imagePullPolicy: IfNotPresent
           name: inventory-db
           env:
             - name: MYSQL_DATABASE

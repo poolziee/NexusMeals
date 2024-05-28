@@ -13,10 +13,9 @@ spec:
       labels:
         app: redis-sessions
     spec:
-      imagePullSecrets:
-        - name: dockerhub-secret
       containers:
         - name: redis-sessions
+          imagePullPolicy: IfNotPresent
           image: redis:latest
           ports:
             - containerPort: 6379 # Redis default port

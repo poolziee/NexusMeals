@@ -14,10 +14,9 @@ spec:
       labels:
         app: rabbitmq
     spec:
-      imagePullSecrets:
-        - name: dockerhub-secret
       containers:
         - name: rabbitmq
+          imagePullPolicy: IfNotPresent
           image: rabbitmq:latest
           env:
             - name: RABBITMQ_DEFAULT_USER
