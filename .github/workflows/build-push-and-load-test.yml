@@ -82,7 +82,7 @@ jobs:
     steps:
       - name: Run k6 test
         run: |
-          k6 run tests/load-test.js
+          K6_STATSD_ENABLE_TAGS=true K6_STATSD_ADDR=${{ secrets.NEX_QUA_DOMAIN }}:8125 nex-k6 run --out statsd tests/load-test.js
 
   cleanup:
     runs-on: self-hosted
