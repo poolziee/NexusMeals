@@ -12,6 +12,8 @@ spec:
       labels:
         app: inventory
     spec:
+      imagePullSecrets:
+        - name: dockerhub-secret
       containers:
         - name: inventory
           image: poolziee/nexusmeals-inventory:latest

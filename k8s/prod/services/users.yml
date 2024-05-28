@@ -12,6 +12,8 @@ spec:
       labels:
         app: users
     spec:
+      imagePullSecrets:
+        - name: dockerhub-secret
       containers:
         - name: users
           image: poolziee/nexusmeals-users:latest

@@ -12,6 +12,8 @@ spec:
       labels:
         app: orders
     spec:
+      imagePullSecrets:
+        - name: dockerhub-secret
       containers:
         - name: orders
           image: poolziee/nexusmeals-orders:latest

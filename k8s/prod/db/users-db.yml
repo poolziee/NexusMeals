@@ -24,6 +24,8 @@ spec:
       labels:
         app: users-db
     spec:
+      imagePullSecrets:
+        - name: dockerhub-secret
       containers:
         - image: mysql:5.7.20
           name: users-db
