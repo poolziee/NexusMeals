@@ -1,5 +1,5 @@
 apiVersion: k6.io/v1alpha1
-kind: TestRun
+kind: K6
 metadata:
   name: run-nex-k6
 spec:
