@@ -90,7 +90,6 @@ jobs:
     if: always()
     steps:
       - name: Cleanup
-        # TODO: Either cleanup persistent volumes, or do not use them in qualification.
         run: |
           kubectl delete -f nex-config.yml
           kubectl delete -f k8s/ingress-qua.yml
