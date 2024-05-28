@@ -13,6 +13,6 @@ export class OrdersController {
 
   @MessagePattern(PN.rpc_example, Transport.TCP)
   handleRpcExample(): string {
-    return this.ordersService.rpcExample();
+    return 'Hello world.';
   }
 }
