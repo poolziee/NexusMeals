@@ -1,6 +1,6 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
-
+// Test.
 export default function () {
   const url = (slug) => `http://nex-api.local/${slug}`;
   const registerData = {
