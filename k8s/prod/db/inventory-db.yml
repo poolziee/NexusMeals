@@ -52,10 +52,7 @@ spec:
           volumeMounts:
             - name: inventory-db-ephemeral-storage
               mountPath: /var/lib/mysql
-          resources:
-            limits:
-              cpu: '1'
-              memory: '1Gi'
+          resources: {}
       volumes:
         - name: inventory-db-ephemeral-storage
           emptyDir: {}

@@ -52,10 +52,7 @@ spec:
           volumeMounts:
             - name: users-db-ephemeral-storage
               mountPath: /var/lib/mysql
-          resources:
-            limits:
-              cpu: '1'
-              memory: '1Gi'
+          resources: {}
       volumes:
         - name: users-db-ephemeral-storage
           emptyDir: {}
