@@ -40,4 +40,5 @@ jobs:
           namespace: 'default'
           manifests: |
             ./nex-config.yml
+            ./k8s/ingress-prod.yml
             ./k8s/prod/
