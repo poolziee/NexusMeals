@@ -11,7 +11,7 @@ const loadTestGracefulStopSecs = 5;
 let vuSetupsDone = new Counter('vu_setups_done');
 let globalData = { cookies: {}, currentUser: {} };
 
-const baseUrl = 'http://localhost:3000';
+const baseUrl = __ENV.DOMAIN ? `http://${__ENV.DOMAIN}` : 'http://localhost:3000';
 const url = (slug) => `${baseUrl}/${slug}`;
 
 function callerName() {
