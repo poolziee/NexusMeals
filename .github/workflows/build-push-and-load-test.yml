@@ -82,7 +82,7 @@ jobs:
     steps:
       - name: Run k6 test
         run: |
-          K6_STATSD_ENABLE_TAGS=true K6_STATSD_ADDR=${{ secrets.NEX_QUA_DOMAIN }}:8125 /home/ubuntu/k6 run -e TEST_RUN_ID=${{ github.event.release.tag_name }} -e DOMAIN=nex-api.local --out statsd tests/load-test.js
+          K6_STATSD_ENABLE_TAGS=true K6_STATSD_ADDR=${{ secrets.NEX_QUA_DOMAIN }}:8125 /home/ubuntu/k6 run -e TEST_RUN_ID=${{ github.ref_name }} -e DOMAIN=nex-api.local --out statsd tests/load-test.js
 
   cleanup:
     runs-on: self-hosted
