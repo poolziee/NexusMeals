@@ -1,68 +1,35 @@
-// TODO: fix VU usage: https://github.com/grafana/k6/issues/785
 import http from 'k6/http';
 import { check } from 'k6';
 import { uuidv4 } from 'https://jslib.k6.io/k6-utils/1.4.0/index.js';
+import { Counter } from 'k6/metrics';
 
 const VUsCount = 10;
+const vuInitTimeoutSecs = 2 * VUsCount;
+const loadTestDurationSecs = 30;
+const loadTestGracefulStopSecs = 5;
+
+let vuSetupsDone = new Counter('vu_setups_done');
+let globalData = { cookies: {}, currentUser: {} };
+
 const baseUrl = 'http://localhost:3000';
 const url = (slug) => `${baseUrl}/${slug}`;
 
-export const options = {
-  // scenarios: {
-  //   create_category: {
-  //     exec: 'create_category',
-  //     executor: 'ramping-arrival-rate',
-  //     gracefulStop: '0s', // stop immediately on stop signal
-  //     startRate: '1', // start at 1 iteration per second per VU
-  //     timeUnit: '1s', // increase the rate every second
-  //     preAllocatedVUs: 10, // number of VUs to pre-allocate
-  //     maxVUs: VUsCount, // maximum number of VUs
-  //     stages: [
-  //       { target: 20, duration: '10s' }, // ramp up to 20 iterations per second over 10 seconds
-  //       { target: 20, duration: '10s' }, // stay at 20 iterations per second for 10 seconds
-  //       { target: 0, duration: '10s' }, // ramp down to 0 iterations per second over 10 seconds
-  //     ],
-  //   },
-  //   create_product: {
-  //     exec: 'create_product',
-  //     executor: 'ramping-arrival-rate',
-  //     gracefulStop: '0s', // stop immediately on stop signal
-  //     startTime: '10s', // start seconds after the start of the test
-  //     startRate: '1', // start at 1 iteration per second per VU
-  //     timeUnit: '1s', // increase the rate every second
-  //     preAllocatedVUs: 10, // number of VUs to pre-allocate
-  //     maxVUs: VUsCount, // maximum number of VUs
-  //     stages: [
-  //       { target: 20, duration: '10s' }, // ramp up to 20 iterations per second over 10 seconds
-  //       { target: 20, duration: '10s' }, // stay at 20 iterations per second for 10 seconds
-  //       { target: 0, duration: '10s' }, // ramp down to 0 iterations per second over 10 seconds
-  //     ],
-  //   },
-  // },
-  scenarios: {
-    create_category: {
-      executor: 'per-vu-iterations',
-      gracefulStop: '0s', // stop immediately on stop signal
-      vus: VUsCount, // number of VUs to run concurrently
-      iterations: 5, // number of iterations each VU will perform
-      maxDuration: '1m', // maximum test duration
-      exec: 'create_category', // function to execute
-    },
-    create_product: {
-      executor: 'per-vu-iterations',
-      gracefulStop: '0s', // stop immediately on stop signal
-      startTime: '10s', // start seconds after the start of the test
-      vus: VUsCount, // number of VUs to run concurrently
-      iterations: 3, // number of iterations each VU will perform
-      startTime: '0s', // start immediately after the create_category scenario
-      maxDuration: '1m', // maximum test duration
-      exec: 'create_product', // function to execute
-    },
-  },
-};
-function VU() {
-  const vuModulus = __VU % VUsCount;
-  return vuModulus === 0 ? VUsCount : vuModulus;
+function callerName() {
+  const error = new Error();
+  const stack = error.stack.split('\n');
+  if (stack.length > 3) {
+    const callerLine = stack[3].trim();
+    const match = callerLine.match(/at (\S+)/);
+    if (match && match.length > 1) {
+      return match[1];
+    }
+  }
+  return 'unknown';
+}
+
+function log(msg, parent = '') {
+  const callerParent = parent ? `[${parent}] ` : '';
+  console.log(`${callerParent}[${callerName()}] [VU ${__VU} (${globalData.currentUser.username})] ${msg}`);
 }
 
 function post(slug, data) {
@@ -73,54 +40,17 @@ function post(slug, data) {
   });
 }
 
-export function setup() {
-  const users = [];
-  http.cookieJar().clear(baseUrl);
-  for (let i = 1; i <= VUsCount; i++) {
-    const uniqueId = `${i}-${uuidv4()}`;
-    const registerData = {
-      firstName: `John${i}`,
-      lastName: `Doe${i}`,
-      email: `johnDoe${uniqueId}@mail.com`,
-      username: `johdoe${uniqueId}`,
-      address: 'SomeAddress',
-      password: 'Somepass123.',
-      role: 'CHEF',
-      city: 'Eindhoven',
-      postalCode: '5123JP',
-      street: 'Marconilaan',
-      houseNumber: '13',
-    };
-
-    const loginData = {
-      username: `johdoe${uniqueId}`,
-      password: 'Somepass123.',
-    };
-
-    let res = post('auth/register', registerData);
-    check(res, { 'auth/register': (r) => r.status === 201 });
-
-    res = post('auth/login', loginData);
-    check(res, { 'auth/login': (r) => r.status === 201 });
-
-    const cookies = http.cookieJar().cookiesForURL(baseUrl);
-    http.cookieJar().clear(baseUrl);
-    users.push(cookies);
-  }
-
-  return { users };
+function get(slug) {
+  return http.get(url(slug));
 }
 
 /** Initialize cookies for the virtual user. */
-function setCookieJar(data) {
-  const cookies = data.users[VU() - 1];
-  const currentUser = JSON.parse(decodeURIComponent(cookies['current_user'][0]));
+function setCookieJar() {
   let jar = http.cookieJar();
-  Object.keys(cookies).forEach((key) => {
-    jar.set(baseUrl, key, cookies[key][0]);
+  Object.keys(globalData.cookies).forEach((key) => {
+    jar.set(baseUrl, key, globalData.cookies[key][0]);
   });
-
-  return currentUser;
+  return globalData.currentUser;
 }
 
 function getCategories(chefId, withProducts = false) {
@@ -135,31 +65,148 @@ function randomInt(min, max) {
   return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
 }
 
-export function create_category(data) {
-  setCookieJar(data);
-  const uniqueId = `VU.${__VU}-ITER.${__ITER}`;
+/ ** ---------------------------------------------------------** /;
+export const options = {
+  tags: {
+    test_run_id: __ENV.TEST_RUN_ID || 'local-test-run',
+  },
+  scenarios: {
+    // This is the per-VU setup/init equivalent:
+    vu_setup: {
+      executor: 'per-vu-iterations',
+      exec: 'vu_setup',
+      vus: VUsCount,
+      iterations: 1,
+      gracefulStop: '0s',
+      maxDuration: `${vuInitTimeoutSecs}s`,
+    },
+    create_category: {
+      executor: 'per-vu-iterations',
+      exec: 'create_category',
+      vus: VUsCount,
+      iterations: 5,
+      gracefulStop: `${loadTestGracefulStopSecs}s`,
+      startTime: `${vuInitTimeoutSecs}s`,
+      maxDuration: `${loadTestDurationSecs}s`,
+      tags: { type: 'loadtest' },
+    },
+    create_product: {
+      executor: 'per-vu-iterations',
+      exec: 'create_product',
+      vus: VUsCount,
+      iterations: 3,
+      gracefulStop: `${loadTestGracefulStopSecs}s`,
+      startTime: `${vuInitTimeoutSecs + loadTestDurationSecs + loadTestGracefulStopSecs}s`,
+      maxDuration: `${loadTestDurationSecs}s`,
+      tags: { type: 'loadtest' },
+    },
+    // This is the per-VU teardown/cleanup equivalent:
+    vu_teardown: {
+      executor: 'per-vu-iterations',
+      exec: 'vu_teardown',
+      vus: VUsCount,
+      iterations: 1,
+      startTime: `${vuInitTimeoutSecs + 2 * loadTestDurationSecs + 2 * loadTestGracefulStopSecs}s`,
+      maxDuration: `${vuInitTimeoutSecs}s`,
+    },
+  },
+  thresholds: {
+    // Make sure all of the VUs finished their setup successfully, so we can
+    // ensure that the load test won't continue with broken VU "setup" data
+    vu_setups_done: [
+      {
+        threshold: `count==${VUsCount}`,
+        abortOnFail: true,
+        delayAbortEval: `${vuInitTimeoutSecs}s`,
+      },
+    ],
+    // Also make sure all of the VU teardown calls finished uninterrupted:
+    'iterations{scenario:vu_teardown}': [`count==${VUsCount}`],
+
+    // Ignore HTTP requests from the VU setup or teardown here
+    'http_req_duration{type:loadtest}': ['p(95)<500', 'max<1000'],
+    'http_req_duration{scenario:create_category}': ['p(95)<500', 'max<1000'],
+    'http_req_duration{scenario:create_product}': ['p(95)<500', 'max<1000'],
+  },
+  summaryTrendStats: ['min', 'max', 'med', 'avg', 'p(95)'],
+};
+
+/ ** ------------------------------------------------------------------------------** /;
+
+export function vu_setup() {
+  vuSetupsDone.add(0);
+  http.cookieJar().clear(baseUrl);
+  const uniqueId = `$:VU.${__VU}-${uuidv4()}`;
+  const registerData = {
+    firstName: `John${__VU}`,
+    lastName: `Doe${__VU}`,
+    email: `johnDoe${uniqueId}@mail.com`,
+    username: `johdoe${uniqueId}`,
+    address: 'SomeAddress',
+    password: 'Somepass123.',
+    role: 'CHEF',
+    city: 'Eindhoven',
+    postalCode: '5123JP',
+    street: 'Marconilaan',
+    houseNumber: '13',
+  };
+
+  const loginData = {
+    username: `johdoe${uniqueId}`,
+    password: 'Somepass123.',
+  };
+
+  let res = post('auth/register', registerData);
+  check(res, { 'auth/register': (r) => r.status === 201 });
+
+  res = post('auth/login', loginData);
+
+  if (check(res, { 'auth/login': (r) => r.status === 201 })) {
+    globalData.cookies = http.cookieJar().cookiesForURL(baseUrl);
+    globalData.currentUser = JSON.parse(decodeURIComponent(globalData.cookies['current_user'][0]));
+    http.cookieJar().clear(baseUrl);
+
+    log(`Registered and changed globalData: ${globalData.currentUser.username}.`);
+
+    vuSetupsDone.add(1);
+  }
+}
+
+export function create_category() {
+  setCookieJar();
+  const uniqueId = `:VU.${__VU}-ITER.${__ITER}`;
   let res = post('inventory/category/create', {
-    name: `K6-Category-${uniqueId}`,
+    name: `K6-Category${uniqueId}`,
     description: 'K6-Description',
   });
 
   check(res, { 'inventory/category/create': (r) => r.status === 201 });
 }
 
-export function create_product(data) {
-  const currentUser = setCookieJar(data);
+export function create_product() {
+  const currentUser = setCookieJar();
   const categories = getCategories(currentUser.id);
-  const randomIndex = randomInt(0, categories.length - 1);
-  console.log(`User: ${currentUser.username}, Categories: ${categories.length}, randomIndex: ${randomIndex}`);
-  console.log(categories);
-  const uniqueId = `VU.${__VU}-ITER.${__ITER}`;
-  let res = post('inventory/product/create', {
-    name: `K6-Product-${uniqueId}`,
-    description: 'K6-Description',
-    category: categories[randomIndex].name,
-    quantity: randomInt(100, 200),
-    price: 10,
-  });
+  if (categories.length > 0) {
+    const uniqueId = `:VU.${__VU}-ITER.${__ITER}-${uuidv4()}`;
+    let res = post('inventory/product/create', {
+      name: `K6-Product-${uniqueId}`,
+      description: 'K6-Description',
+      category: categories[randomInt(0, categories.length - 1)].name,
+      quantity: randomInt(100, 200),
+      price: 10,
+    });
 
-  check(res, { 'inventory/product/create': (r) => r.status === 201 });
+    check(res, { 'inventory/product/create': (r) => r.status === 201 });
+  } else {
+    log(`Skipped due to 0 categories.`);
+  }
+}
+
+export function vu_teardown() {
+  setCookieJar();
+  log(`Tearing down...`);
+
+  check(get('auth/logout'), { 'auth/logout': (r) => r.status === 200 });
+
+  log(`Torn down.`);
 }
