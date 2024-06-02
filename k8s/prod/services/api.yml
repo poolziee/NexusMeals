@@ -43,7 +43,7 @@ spec:
     - port: 3000
       targetPort: 3000
 ---
-apiVersion: autoscaling/v2
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: api-hpa
