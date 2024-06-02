@@ -55,13 +55,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Apply nex config
+      - name: Copy nex config
         run: |
           echo "${{ secrets.NEXCONFIG }}" > nex-config.yml
-          kubectl apply -f nex-config.yml
+
+      - name: Delete existing resources
+        run: |
+          kubectl delete configmap nex-config --ignore-not-found
+          kubectl delete -f k8s/ingress-qua.yml --ignore-not-found
+          kubectl delete -f k8s/prod/ --recursive --ignore-not-found
+
+      - name: Wait for resources to be deleted
+        run: |
+          kubectl wait --for=delete pod --all --timeout=180s || true
+          kubectl wait --for=delete svc --all --timeout=180s || true
 
       - name: Start the cluster
         run: |
+          kubectl apply -f nex-config.yml
+          sleep 2s
           kubectl apply -f k8s/ingress-qua.yml
           kubectl apply -f k8s/prod/ --recursive
           sleep 30s
@@ -91,7 +103,4 @@ jobs:
     steps:
       - name: Cleanup
         run: |
-          kubectl delete -f nex-config.yml
-          kubectl delete -f k8s/ingress-qua.yml
-          kubectl delete -f k8s/prod/ --recursive
           rm -r *

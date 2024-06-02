@@ -136,12 +136,6 @@ function setCookieJar() {
   return globalData.currentUser;
 }
 
-function getCategories(chefId, withProducts = false) {
-  const res = post('inventory/categories', { chefId, withProducts });
-  check(res, { 'inventory/categories': (r) => r.status === 201 });
-  return JSON.parse(res.body);
-}
-
 function randomInt(min, max) {
   const minCeiled = Math.ceil(min);
   const maxFloored = Math.floor(max);

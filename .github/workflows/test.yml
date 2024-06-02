@@ -26,7 +26,3 @@ jobs:
 
       - name: Unit testing
         run: npm run test
-
-      - name: Integration testing
-        run: |
-          echo "TODO: Run integration tests."
