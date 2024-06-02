@@ -1,36 +1,36 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: inventory-db
+  name: orders-db
 spec:
   ports:
-    - port: 3306
+    - port: 3305
   selector:
-    app: inventory-db
+    app: orders-db
   clusterIP: None
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: inventory-db
+  name: orders-db
 spec:
   selector:
     matchLabels:
-      app: inventory-db
+      app: orders-db
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: inventory-db
+        app: orders-db
     spec:
       containers:
         - image: mysql:5.7.20
           imagePullPolicy: IfNotPresent
-          name: inventory-db
+          name: orders-db
           env:
             - name: MYSQL_DATABASE
-              value: 'inventory-db'
+              value: 'orders-db'
             - name: MYSQL_USER
               valueFrom:
                 configMapKeyRef:
@@ -47,10 +47,10 @@ spec:
                   name: nex-config
                   key: MYSQL_ROOT_PASSWORD
           ports:
-            - containerPort: 3306
-              name: inventory-db
+            - containerPort: 3305
+              name: orders-db
           volumeMounts:
-            - name: inventory-db-ephemeral-storage
+            - name: orders-db-ephemeral-storage
               mountPath: /var/lib/mysql
           resources:
             requests:
@@ -60,5 +60,5 @@ spec:
               memory: '1Gi'
               cpu: '500m'
       volumes:
-        - name: inventory-db-ephemeral-storage
+        - name: orders-db-ephemeral-storage
           emptyDir: {}
