@@ -86,7 +86,7 @@ export const options = {
     // Also make sure all of the VU teardown calls finished uninterrupted:
     'iterations{scenario:vu_teardown}': [`count==${VUsCount}`],
 
-    // Ignore HTTP requests from the VU setup or teardown here
+    // Ignore HTTP requests from the VU setup or teardown here:
     'http_req_duration{type:loadtest}': ['p(95)<2000', 'avg<1500'],
     'http_req_duration{scenario:create_product}': ['p(95)<2000', 'avg<1500'],
   },
