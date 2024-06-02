@@ -11,7 +11,7 @@ const baseUrl = __ENV.DOMAIN ? `http://${__ENV.DOMAIN}` : 'http://localhost:3000
 
 / ** ------------------------------------------------------------------------------** /;
 
-const VUsCount = prod ? 2000 : 20;
+const VUsCount = prod ? 100 : 20;
 
 const cpRampUpDuration = prod ? 60 : 10;
 const cpStayDuration = prod ? 120 : 20;
@@ -55,8 +55,8 @@ export const options = {
       preAllocatedVUs: VUsCount / 10, // number of VUs to pre-allocate
       maxVUs: VUsCount, // maximum number of VUs
       stages: [
-        { target: VUsCount * 3, duration: `${cpRampUpDuration}s` }, // ramp up
-        { target: VUsCount * 3, duration: `${cpStayDuration}s` }, // stay
+        { target: 2000, duration: `${cpRampUpDuration}s` }, // ramp up
+        { target: 2000, duration: `${cpStayDuration}s` }, // stay
         { target: 0, duration: `${cpRampDownDuration}s` }, // ramp down
       ],
       tags: { type: 'loadtest' },
