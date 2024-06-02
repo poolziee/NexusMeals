@@ -9,9 +9,25 @@ env:
   NODE_VERSION: 20.11.1
 
 jobs:
+  qodana:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }} # to check out the actual pull request commit, not the merge commit
+          fetch-depth: 0 # a full history is required for pull request analysis
+      - name: 'Qodana Scan'
+        uses: JetBrains/qodana-action@v2024.1
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+
   test:
     runs-on: ubuntu-latest
-
+    needs: qodana
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
