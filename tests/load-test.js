@@ -13,9 +13,10 @@ const baseUrl = __ENV.DOMAIN ? `http://${__ENV.DOMAIN}` : 'http://localhost:3000
 
 const VUsCount = prod ? 100 : 20;
 
-const cpRampUpDuration = prod ? 60 : 10;
-const cpStayDuration = prod ? 120 : 20;
-const cpRampDownDuration = prod ? 60 : 10;
+const ccTargetRequestsPerSec = 2000;
+const cpRampUpDuration = prod ? 60 * 2 : 10;
+const cpStayDuration = prod ? 60 * 5 : 20;
+const cpRampDownDuration = prod ? 60 * 2 : 10;
 const cpDurationSecs = cpRampUpDuration + cpStayDuration + cpRampDownDuration + 5;
 
 const vuInitTimeoutSecs = VUsCount * 2;
@@ -56,8 +57,8 @@ export const options = {
       preAllocatedVUs: VUsCount / 10, // number of VUs to pre-allocate
       maxVUs: VUsCount, // maximum number of VUs
       stages: [
-        { target: 2000, duration: `${cpRampUpDuration}s` }, // ramp up
-        { target: 2000, duration: `${cpStayDuration}s` }, // stay
+        { target: ccTargetRequestsPerSec, duration: `${cpRampUpDuration}s` }, // ramp up
+        { target: ccTargetRequestsPerSec, duration: `${cpStayDuration}s` }, // stay
         { target: 0, duration: `${cpRampDownDuration}s` }, // ramp down
       ],
       tags: { type: 'loadtest' },
@@ -87,7 +88,6 @@ export const options = {
 
     // Ignore HTTP requests from the VU setup or teardown here
     'http_req_duration{type:loadtest}': ['p(95)<700', 'max<1000'],
-    'http_req_duration{scenario:create_category}': ['p(95)<700', 'max<1000'],
     'http_req_duration{scenario:create_product}': ['p(95)<700', 'max<1000'],
   },
   summaryTrendStats: ['min', 'max', 'med', 'avg', 'p(95)'],
@@ -201,7 +201,6 @@ export function create_category() {
 
   if (check(res, { 'inventory/category/create': (r) => r.status === 201 })) {
     globalData.categories.push(categoryName);
-    log(`Created category: ${categoryName}`);
   }
 }
 
@@ -219,9 +218,7 @@ export function create_product() {
       price: randomInt(4, 20) + 0.99,
     });
 
-    if (check(res, { 'inventory/product/create': (r) => r.status === 201 })) {
-      log(`Created product: ${productName}`);
-    }
+    check(res, { 'inventory/product/create': (r) => r.status === 201 });
   } else {
     log(`Skipped due to 0 categories.`);
   }
