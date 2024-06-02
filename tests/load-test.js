@@ -18,8 +18,7 @@ const cpStayDuration = prod ? 120 : 20;
 const cpRampDownDuration = prod ? 60 : 10;
 const cpDurationSecs = cpRampUpDuration + cpStayDuration + cpRampDownDuration + 5;
 
-const vuSetupStaggerSecs = 1.2;
-const vuInitTimeoutSecs = VUsCount * vuSetupStaggerSecs + 15;
+const vuInitTimeoutSecs = VUsCount * 2;
 
 const loadTestGracefulStopSecs = 5;
 const ccDurationSecs = 15;
@@ -152,7 +151,7 @@ function randomInt(min, max) {
 / ** ------------------------------------------------------------------------------** /;
 
 export function vu_setup() {
-  sleep(__VU * vuSetupStaggerSecs);
+  sleep(__VU);
   vuSetupsDone.add(0);
   http.cookieJar().clear(baseUrl);
   const uniqueId = `$:VU.${__VU}-${uuidv4()}`;
