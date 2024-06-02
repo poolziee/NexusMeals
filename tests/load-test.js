@@ -1,5 +1,5 @@
 import http from 'k6/http';
-import { check } from 'k6';
+import { check, sleep } from 'k6';
 import { uuidv4 } from 'https://jslib.k6.io/k6-utils/1.4.0/index.js';
 import { Counter } from 'k6/metrics';
 
@@ -16,11 +16,13 @@ const VUsCount = prod ? 100 : 20;
 const cpRampUpDuration = prod ? 60 : 10;
 const cpStayDuration = prod ? 120 : 20;
 const cpRampDownDuration = prod ? 60 : 10;
-const createProductDurationSecs = cpRampUpDuration + cpStayDuration + cpRampDownDuration + 5;
+const cpDurationSecs = cpRampUpDuration + cpStayDuration + cpRampDownDuration + 5;
 
-const vuInitTimeoutSecs = VUsCount + 10;
+const vuSetupStaggerSecs = 1.2;
+const vuInitTimeoutSecs = VUsCount * vuSetupStaggerSecs + 15;
+
 const loadTestGracefulStopSecs = 5;
-const createCategoryDurationSecs = 15;
+const ccDurationSecs = 15;
 
 export const options = {
   tags: {
@@ -43,13 +45,13 @@ export const options = {
       iterations: 10,
       gracefulStop: `${loadTestGracefulStopSecs}s`,
       startTime: `${vuInitTimeoutSecs}s`,
-      maxDuration: `${createCategoryDurationSecs}s`,
+      maxDuration: `${ccDurationSecs}s`,
     },
     create_product: {
       exec: 'create_product',
       executor: 'ramping-arrival-rate',
       gracefulStop: `${loadTestGracefulStopSecs}s`,
-      startTime: `${vuInitTimeoutSecs + createCategoryDurationSecs + loadTestGracefulStopSecs}s`, // start seconds after the start of the test
+      startTime: `${vuInitTimeoutSecs + ccDurationSecs + loadTestGracefulStopSecs}s`, // start seconds after the start of the test
       startRate: 1,
       timeUnit: '1s', // increase the rate every second
       preAllocatedVUs: VUsCount / 10, // number of VUs to pre-allocate
@@ -67,7 +69,7 @@ export const options = {
       exec: 'vu_teardown',
       vus: VUsCount,
       iterations: 1,
-      startTime: `${vuInitTimeoutSecs + createCategoryDurationSecs + createProductDurationSecs + 2 * loadTestGracefulStopSecs}s`,
+      startTime: `${vuInitTimeoutSecs + ccDurationSecs + cpDurationSecs + 2 * loadTestGracefulStopSecs}s`,
       maxDuration: `${vuInitTimeoutSecs}s`,
     },
   },
@@ -147,7 +149,10 @@ function randomInt(min, max) {
   return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
 }
 
+/ ** ------------------------------------------------------------------------------** /;
+
 export function vu_setup() {
+  sleep(__VU * vuSetupStaggerSecs);
   vuSetupsDone.add(0);
   http.cookieJar().clear(baseUrl);
   const uniqueId = `$:VU.${__VU}-${uuidv4()}`;
