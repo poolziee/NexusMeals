@@ -13,11 +13,11 @@ const baseUrl = __ENV.DOMAIN ? `http://${__ENV.DOMAIN}` : 'http://localhost:3000
 
 const VUsCount = prod ? 100 : 20;
 
-const ccTargetRequestsPerSec = 2000;
-const cpRampUpDuration = prod ? 60 * 2 : 10;
-const cpStayDuration = prod ? 60 * 5 : 20;
-const cpRampDownDuration = prod ? 60 * 2 : 10;
-const cpDurationSecs = cpRampUpDuration + cpStayDuration + cpRampDownDuration + 5;
+const cpWarmUpDuration = prod ? 90 : 10;
+const cpRampUpDuration = prod ? 90 : 10;
+const cpRampUpHigherDuration = prod ? 120 : 10;
+const cpSustainedHighLoadDuration = prod ? 300 : 10;
+const cpDurationSecs = cpWarmUpDuration + cpRampUpDuration + cpRampUpHigherDuration + cpSustainedHighLoadDuration + 5;
 
 const vuInitTimeoutSecs = VUsCount * 2;
 
@@ -57,9 +57,10 @@ export const options = {
       preAllocatedVUs: VUsCount / 10, // number of VUs to pre-allocate
       maxVUs: VUsCount, // maximum number of VUs
       stages: [
-        { target: ccTargetRequestsPerSec, duration: `${cpRampUpDuration}s` }, // ramp up
-        { target: ccTargetRequestsPerSec, duration: `${cpStayDuration}s` }, // stay
-        { target: 0, duration: `${cpRampDownDuration}s` }, // ramp down
+        { target: 10, duration: `${cpWarmUpDuration}s` }, // Warm up service
+        { target: 20, duration: `${cpRampUpDuration}s` }, // Ramp up to high load
+        { target: 40, duration: `${cpRampUpHigherDuration}s` }, // Continue ramping up to high load
+        { target: 60, duration: `${cpSustainedHighLoadDuration}s` }, // Sustained high load
       ],
       tags: { type: 'loadtest' },
     },
