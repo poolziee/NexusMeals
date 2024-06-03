@@ -15,8 +15,8 @@ const VUsCount = prod ? 100 : 20;
 
 const cpWarmUpDuration = prod ? 90 : 10;
 const cpRampUpDuration = prod ? 90 : 10;
-const cpRampUpHigherDuration = prod ? 120 : 10;
-const cpSustainedHighLoadDuration = prod ? 300 : 10;
+const cpRampUpHigherDuration = prod ? 120 : 15;
+const cpSustainedHighLoadDuration = prod ? 300 : 30;
 const cpDurationSecs = cpWarmUpDuration + cpRampUpDuration + cpRampUpHigherDuration + cpSustainedHighLoadDuration + 5;
 
 const vuInitTimeoutSecs = VUsCount * 2;
@@ -57,10 +57,10 @@ export const options = {
       preAllocatedVUs: VUsCount / 10, // number of VUs to pre-allocate
       maxVUs: VUsCount, // maximum number of VUs
       stages: [
-        { target: 10, duration: `${cpWarmUpDuration}s` }, // Warm up service
-        { target: 20, duration: `${cpRampUpDuration}s` }, // Ramp up to high load
-        { target: 40, duration: `${cpRampUpHigherDuration}s` }, // Continue ramping up to high load
-        { target: 60, duration: `${cpSustainedHighLoadDuration}s` }, // Sustained high load
+        { target: 20, duration: `${cpWarmUpDuration}s` }, // Warm up service
+        { target: 40, duration: `${cpRampUpDuration}s` }, // Ramp up to high load
+        { target: 100, duration: `${cpRampUpHigherDuration}s` }, // Continue ramping up to high load
+        { target: 100, duration: `${cpSustainedHighLoadDuration}s` }, // Sustained high load
       ],
       tags: { type: 'loadtest' },
     },
