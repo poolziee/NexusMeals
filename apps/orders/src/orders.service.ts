@@ -1,23 +1,38 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { OrdersRepository } from './repositories/orders.repository';
-import { RMQ_INVENTORY } from '@app/common/constants';
+import { PN, RMQ_USERS, TCP_INVENTORY } from '@app/common/constants';
 import { ClientProxy } from '@nestjs/microservices';
-import { OrderProductsRepository } from './repositories/orderproducts.repository';
-import { CreateOrderDTO, ReadOrderDTO, UserSession } from '@app/common/dto';
+import {
+  CreateOrderDTO,
+  CreateOrderProductDTO,
+  NexPayload,
+  ReadOrderDTO,
+  ReadOrderProductNoRelationsDTO,
+  UserSession,
+} from '@app/common/dto';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
-import { OrderEntity } from './entities';
+import { Order, Product } from './schemas/order.schema';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class OrdersService {
   constructor(
-    private readonly orderRepo: OrdersRepository,
-    private readonly orderProductRepo: OrderProductsRepository,
-    @Inject(RMQ_INVENTORY) private readonly rmqInventory: ClientProxy,
+    @InjectModel(Order.name) private orderModel: Model<Order>,
+    @Inject(TCP_INVENTORY) private readonly tcpInventory: ClientProxy,
+    @Inject(RMQ_USERS) private readonly rmqUsers: ClientProxy,
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
-  // async createOrder(req: CreateOrderDTO, customer: UserSession): ReadOrderDTO {
-  //   const order = this.mapper.map(req, CreateOrderDTO, OrderEntity);
-  //   order.products = req.products;
-  // }
+
+  async createOrder(req: CreateOrderDTO, customer: UserSession): Promise<ReadOrderDTO> {
+    const products: ReadOrderProductNoRelationsDTO[] = await lastValueFrom(
+      this.tcpInventory.send(PN.create_order, new NexPayload(req.products)),
+    );
+    const order = new this.orderModel(req);
+    order.chefId = products[0].chefId;
+    order.username = customer.username;
+    order.email = customer.email;
+    order.products = this.mapper.mapArray(products, ReadOrderProductNoRelationsDTO, Product);
+  }
 }

@@ -1,4 +1,4 @@
-import { DbModule, RmqModule, TcpModule } from '@app/common';
+import { RmqModule, TcpModule } from '@app/common';
 
 import { AutomapperModule } from '@automapper/nestjs';
 import { ConfigModule } from '@nestjs/config';
@@ -7,12 +7,8 @@ import { Module } from '@nestjs/common';
 import { OrdersController } from './orders.controller';
 import { OrdersService } from './orders.service';
 import { classes } from '@automapper/classes';
-import { ORDERS_DB, RMQ_INVENTORY } from '@app/common/constants';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { OrderEntity } from './entities/order.entity';
-import { OrdersRepository } from './repositories/orders.repository';
-import { OrderProductEntity } from './entities/orderproduct.entity';
-import { OrderProductsRepository } from './repositories/orderproducts.repository';
+import { RMQ_INVENTORY } from '@app/common/constants';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
@@ -26,7 +22,10 @@ import { OrderProductsRepository } from './repositories/orderproducts.repository
         TCP_ORDERS_HOST: Joi.string().required(),
         TCP_ORDERS_PORT: Joi.string().required(),
 
-        MYSQL_ORDERS_URI: Joi.string().required(),
+        ORDERS_DB_URI: Joi.string().required(),
+        ORDERS_DB_NAME: Joi.string().required(),
+        MYSQL_USER: Joi.string().required(),
+        MYSQL_PASSWORD: Joi.string().required(),
       }),
     }),
     RmqModule.register({
@@ -34,11 +33,16 @@ import { OrderProductsRepository } from './repositories/orderproducts.repository
       other: 0,
     }),
     TcpModule,
-    DbModule({ name: ORDERS_DB }),
-    TypeOrmModule.forFeature([OrderEntity, OrderProductEntity]),
+    MongooseModule.forRoot(process.env.ORDERS_DB_URI, {
+      dbName: process.env.ORDERS_DB_NAME,
+      auth: {
+        username: process.env.MYSQL_USER,
+        password: process.env.MYSQL_PASSWORD,
+      },
+    }),
     AutomapperModule.forRoot({ strategyInitializer: classes() }),
   ],
   controllers: [OrdersController],
-  providers: [OrdersService, OrdersRepository, OrderProductsRepository],
+  providers: [OrdersService],
 })
 export class OrdersModule {}

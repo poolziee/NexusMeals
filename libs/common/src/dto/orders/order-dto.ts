@@ -7,13 +7,28 @@ export enum OrderStatus {
   Cancelled = 'Cancelled',
 }
 
-export class ReadOrderProductNoRelationsDTO {
-  @AutoMap()
-  id: string;
+export class CreateOrderProductDTO {
+  id: number;
+  quantity: number;
+}
 
+export class CreateOrderDTO {
+  @AutoMap()
+  @IsNotEmpty()
+  address: string;
+
+  @AutoMap()
+  products: CreateOrderProductDTO[];
+}
+
+export class ReadOrderProductDTO {
   @AutoMap()
   @IsNotEmpty()
   real_id: string;
+
+  @AutoMap()
+  @IsNotEmpty()
+  chefId: number;
 
   @AutoMap()
   @IsNotEmpty()
@@ -31,57 +46,37 @@ export class ReadOrderProductNoRelationsDTO {
   price: number;
 }
 
-export class CreateOrderProductDTO {
-  id: number;
-  quantity: number;
-}
-
-export class CreateOrderDTO {
+export class OrderCustomerDTO {
   @AutoMap()
-  @IsNotEmpty()
-  address: string;
-
-  @AutoMap()
-  @IsNotEmpty()
   username: string;
 
   @AutoMap()
-  @IsNotEmpty()
   email: string;
+}
+
+export class OrderChefDTO {
+  @AutoMap()
+  chefId: number;
 
   @AutoMap()
-  @IsNotEmpty()
-  chefId: string;
-
-  @AutoMap()
-  @IsNotEmpty()
   chefName: string;
-
-  @AutoMap()
-  products: CreateOrderProductDTO[];
 }
 
 export class ReadOrderDTO {
   @AutoMap()
-  id: string;
+  _id: string;
 
   @AutoMap()
   address: string;
 
   @AutoMap()
-  username: string;
+  customer: OrderCustomerDTO;
 
   @AutoMap()
-  email: string;
+  chef: OrderChefDTO;
 
   @AutoMap()
-  products: ReadOrderProductNoRelationsDTO[];
-
-  @AutoMap()
-  chefId: string;
-
-  @AutoMap()
-  chefName: string;
+  products: ReadOrderProductDTO[];
 
   @AutoMap(() => String)
   status: OrderStatus;

@@ -18,6 +18,10 @@ export class ProductEntity {
 
   @Column()
   @AutoMap()
+  chefName: string;
+
+  @Column()
+  @AutoMap()
   description: string;
 
   @Column()

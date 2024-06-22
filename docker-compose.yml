@@ -50,20 +50,22 @@ services:
       - RMQ_INVENTORY_QUEUE=${RMQ_INVENTORY_QUEUE}
       - TCP_ORDERS_HOST=${TCP_ORDERS_HOST}
       - TCP_ORDERS_PORT=${TCP_ORDERS_PORT}
-      - MYSQL_ORDERS_URI=${MYSQL_ORDERS_URI}
-
-  orders-db:
-    image: mysql:5.7.20
-    container_name: '${MYSQL_ORDERS_DB_NAME}'
-    environment:
-      - MYSQL_DATABASE=${MYSQL_ORDERS_DB_NAME}
+      - ORDERS_DB_URI=${ORDERS_DB_URI}
+      - ORDERS_DB_NAME=${ORDERS_DB_NAME}
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+
+  orders-db:
+    image: mongo:6.0
+    container_name: '${ORDERS_DB_NAME}'
+    environment:
+      - MONGO_INITDB_DATABASE=${ORDERS_DB_NAME}
+      - MONGO_INITDB_ROOT_USERNAME=${MYSQL_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MYSQL_PASSWORD}
     volumes:
-      - /var/lib/users-db
+      - /var/lib/orders-db
     ports:
-      - '7200:3305'
+      - '27017:27017'
   # ---------------------------------------------- #
   inventory:
     build:
@@ -98,7 +100,7 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     volumes:
-      - /var/lib/users-db
+      - /var/lib/inventory-db
     ports:
       - '7201:3306'
   # ---------------------------------------------- #
