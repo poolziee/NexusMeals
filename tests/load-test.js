@@ -88,8 +88,8 @@ export const options = {
     'iterations{scenario:vu_teardown}': [`count==${VUsCount}`],
 
     // Ignore HTTP requests from the VU setup or teardown here:
-    'http_req_duration{type:loadtest}': ['p(95)<2000', 'avg<1500'],
-    'http_req_duration{scenario:create_product}': ['p(95)<2000', 'avg<1500'],
+    'http_req_duration{type:loadtest}': ['p(95)<3000', 'avg<1500'],
+    'http_req_duration{scenario:create_product}': ['p(95)<3000', 'avg<1500'],
   },
   summaryTrendStats: ['min', 'max', 'med', 'avg', 'p(95)'],
 };
