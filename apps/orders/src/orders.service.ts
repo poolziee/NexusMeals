@@ -16,6 +16,7 @@ export class OrdersService {
     @Inject(RMQ_INVENTORY) private readonly rmqInventory: ClientProxy,
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
+  // todo
   // async createOrder(req: CreateOrderDTO, customer: UserSession): ReadOrderDTO {
   //   const order = this.mapper.map(req, CreateOrderDTO, OrderEntity);
   //   order.products = req.products;
